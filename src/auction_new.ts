@@ -7,7 +7,7 @@ import {
   Purchased,
   Bid,
   BidCancelled,
-} from "./entities/PIXAuctionSale/PIXAuctionSale";
+} from "./entities/PIXAuctionSaleNew/PIXAuctionSaleNew";
 import {
   Global,
   Sale,
