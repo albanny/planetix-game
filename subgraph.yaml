@@ -88,3 +88,36 @@ dataSources:
           handler: handleBidCancelled
         - event: Purchased(indexed address,indexed address,indexed uint256,uint256)
           handler: handleAuctionPurchased
+
+  - kind: ethereum/contract
+    name: PIXAuctionSaleNew
+    network: matic
+    source:
+      address: "0x87a016Ae5A52688a60415036D45191e632d5D403"
+      abi: PIXAuctionSaleNew
+      startBlock: 21500070
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.4
+      language: wasm/assemblyscript
+      file: ./src/auction_new.ts
+      entities:
+        - Global
+        - Sale
+        - Bid
+      abis:
+        - name: PIXAuctionSaleNew
+          file: ./abis/auction_new.json
+      eventHandlers:
+        - event: SaleRequested(indexed address,indexed uint256,address,uint64,uint256[],uint256)
+          handler: handleAuctionRequested
+        - event: SaleUpdated(indexed uint256,uint64)
+          handler: handleAuctionUpdated
+        - event: SaleCancelled(indexed uint256)
+          handler: handleAuctionCancelled
+        - event: Bid(indexed address,indexed uint256,uint256)
+          handler: handleBid
+        - event: BidCancelled(indexed address,indexed uint256,uint256)
+          handler: handleBidCancelled
+        - event: Purchased(indexed address,indexed address,indexed uint256,uint256)
+          handler: handleAuctionPurchased

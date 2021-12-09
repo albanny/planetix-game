@@ -10,6 +10,58 @@ import {
   BigInt
 } from "@graphprotocol/graph-ts";
 
+export class Bid extends ethereum.Event {
+  get params(): Bid__Params {
+    return new Bid__Params(this);
+  }
+}
+
+export class Bid__Params {
+  _event: Bid;
+
+  constructor(event: Bid) {
+    this._event = event;
+  }
+
+  get bidder(): Address {
+    return this._event.parameters[0].value.toAddress();
+  }
+
+  get saleId(): BigInt {
+    return this._event.parameters[1].value.toBigInt();
+  }
+
+  get bidAmount(): BigInt {
+    return this._event.parameters[2].value.toBigInt();
+  }
+}
+
+export class BidCancelled extends ethereum.Event {
+  get params(): BidCancelled__Params {
+    return new BidCancelled__Params(this);
+  }
+}
+
+export class BidCancelled__Params {
+  _event: BidCancelled;
+
+  constructor(event: BidCancelled) {
+    this._event = event;
+  }
+
+  get bidder(): Address {
+    return this._event.parameters[0].value.toAddress();
+  }
+
+  get saleId(): BigInt {
+    return this._event.parameters[1].value.toBigInt();
+  }
+
+  get bidAmount(): BigInt {
+    return this._event.parameters[2].value.toBigInt();
+  }
+}
+
 export class OwnershipTransferred extends ethereum.Event {
   get params(): OwnershipTransferred__Params {
     return new OwnershipTransferred__Params(this);
@@ -62,40 +114,6 @@ export class Purchased__Params {
   }
 }
 
-export class PurchasedWithSignature extends ethereum.Event {
-  get params(): PurchasedWithSignature__Params {
-    return new PurchasedWithSignature__Params(this);
-  }
-}
-
-export class PurchasedWithSignature__Params {
-  _event: PurchasedWithSignature;
-
-  constructor(event: PurchasedWithSignature) {
-    this._event = event;
-  }
-
-  get seller(): Address {
-    return this._event.parameters[0].value.toAddress();
-  }
-
-  get buyer(): Address {
-    return this._event.parameters[1].value.toAddress();
-  }
-
-  get nftToken(): Address {
-    return this._event.parameters[2].value.toAddress();
-  }
-
-  get tokenId(): BigInt {
-    return this._event.parameters[3].value.toBigInt();
-  }
-
-  get price(): BigInt {
-    return this._event.parameters[4].value.toBigInt();
-  }
-}
-
 export class SaleCancelled extends ethereum.Event {
   get params(): SaleCancelled__Params {
     return new SaleCancelled__Params(this);
@@ -139,12 +157,16 @@ export class SaleRequested__Params {
     return this._event.parameters[2].value.toAddress();
   }
 
+  get endTime(): BigInt {
+    return this._event.parameters[3].value.toBigInt();
+  }
+
   get tokenIds(): Array<BigInt> {
-    return this._event.parameters[3].value.toBigIntArray();
+    return this._event.parameters[4].value.toBigIntArray();
   }
 
   get price(): BigInt {
-    return this._event.parameters[4].value.toBigInt();
+    return this._event.parameters[5].value.toBigInt();
   }
 }
 
@@ -165,7 +187,7 @@ export class SaleUpdated__Params {
     return this._event.parameters[0].value.toBigInt();
   }
 
-  get newPrice(): BigInt {
+  get newEndTime(): BigInt {
     return this._event.parameters[1].value.toBigInt();
   }
 }
@@ -200,7 +222,7 @@ export class TreasuryUpdated__Params {
   }
 }
 
-export class PIXFixedSale__landTreasuryResult {
+export class PIXAuctionSaleNew__landTreasuryResult {
   value0: Address;
   value1: BigInt;
   value2: BigInt;
@@ -220,7 +242,7 @@ export class PIXFixedSale__landTreasuryResult {
   }
 }
 
-export class PIXFixedSale__pixtTreasuryResult {
+export class PIXAuctionSaleNew__pixtTreasuryResult {
   value0: Address;
   value1: BigInt;
   value2: BigInt;
@@ -240,15 +262,22 @@ export class PIXFixedSale__pixtTreasuryResult {
   }
 }
 
-export class PIXFixedSale__saleInfoResult {
+export class PIXAuctionSaleNew__saleInfoResult {
   value0: Address;
   value1: Address;
   value2: BigInt;
+  value3: BigInt;
 
-  constructor(value0: Address, value1: Address, value2: BigInt) {
+  constructor(
+    value0: Address,
+    value1: Address,
+    value2: BigInt,
+    value3: BigInt
+  ) {
     this.value0 = value0;
     this.value1 = value1;
     this.value2 = value2;
+    this.value3 = value3;
   }
 
   toMap(): TypedMap<string, ethereum.Value> {
@@ -256,30 +285,65 @@ export class PIXFixedSale__saleInfoResult {
     map.set("value0", ethereum.Value.fromAddress(this.value0));
     map.set("value1", ethereum.Value.fromAddress(this.value1));
     map.set("value2", ethereum.Value.fromUnsignedBigInt(this.value2));
+    map.set("value3", ethereum.Value.fromUnsignedBigInt(this.value3));
     return map;
   }
 }
 
-export class PIXFixedSale extends ethereum.SmartContract {
-  static bind(address: Address): PIXFixedSale {
-    return new PIXFixedSale("PIXFixedSale", address);
+export class PIXAuctionSaleNew__saleStateResult {
+  value0: Address;
+  value1: BigInt;
+
+  constructor(value0: Address, value1: BigInt) {
+    this.value0 = value0;
+    this.value1 = value1;
   }
 
-  landTreasury(): PIXFixedSale__landTreasuryResult {
+  toMap(): TypedMap<string, ethereum.Value> {
+    let map = new TypedMap<string, ethereum.Value>();
+    map.set("value0", ethereum.Value.fromAddress(this.value0));
+    map.set("value1", ethereum.Value.fromUnsignedBigInt(this.value1));
+    return map;
+  }
+}
+
+export class PIXAuctionSaleNew extends ethereum.SmartContract {
+  static bind(address: Address): PIXAuctionSaleNew {
+    return new PIXAuctionSaleNew("PIXAuctionSaleNew", address);
+  }
+
+  burnHolder(): Address {
+    let result = super.call("burnHolder", "burnHolder():(address)", []);
+
+    return result[0].toAddress();
+  }
+
+  try_burnHolder(): ethereum.CallResult<Address> {
+    let result = super.tryCall("burnHolder", "burnHolder():(address)", []);
+    if (result.reverted) {
+      return new ethereum.CallResult();
+    }
+    let value = result.value;
+    return ethereum.CallResult.fromValue(value[0].toAddress());
+  }
+
+  landTreasury(): PIXAuctionSaleNew__landTreasuryResult {
     let result = super.call(
       "landTreasury",
       "landTreasury():(address,uint256,uint256)",
       []
     );
 
-    return new PIXFixedSale__landTreasuryResult(
+    return new PIXAuctionSaleNew__landTreasuryResult(
       result[0].toAddress(),
       result[1].toBigInt(),
       result[2].toBigInt()
     );
   }
 
-  try_landTreasury(): ethereum.CallResult<PIXFixedSale__landTreasuryResult> {
+  try_landTreasury(): ethereum.CallResult<
+    PIXAuctionSaleNew__landTreasuryResult
+  > {
     let result = super.tryCall(
       "landTreasury",
       "landTreasury():(address,uint256,uint256)",
@@ -290,7 +354,7 @@ export class PIXFixedSale extends ethereum.SmartContract {
     }
     let value = result.value;
     return ethereum.CallResult.fromValue(
-      new PIXFixedSale__landTreasuryResult(
+      new PIXAuctionSaleNew__landTreasuryResult(
         value[0].toAddress(),
         value[1].toBigInt(),
         value[2].toBigInt()
@@ -313,34 +377,20 @@ export class PIXFixedSale extends ethereum.SmartContract {
     return ethereum.CallResult.fromValue(value[0].toBigInt());
   }
 
-  nonces(param0: Address, param1: Address, param2: BigInt): BigInt {
-    let result = super.call(
-      "nonces",
-      "nonces(address,address,uint256):(uint256)",
-      [
-        ethereum.Value.fromAddress(param0),
-        ethereum.Value.fromAddress(param1),
-        ethereum.Value.fromUnsignedBigInt(param2)
-      ]
-    );
+  nonces(param0: Address, param1: BigInt): BigInt {
+    let result = super.call("nonces", "nonces(address,uint256):(uint256)", [
+      ethereum.Value.fromAddress(param0),
+      ethereum.Value.fromUnsignedBigInt(param1)
+    ]);
 
     return result[0].toBigInt();
   }
 
-  try_nonces(
-    param0: Address,
-    param1: Address,
-    param2: BigInt
-  ): ethereum.CallResult<BigInt> {
-    let result = super.tryCall(
-      "nonces",
-      "nonces(address,address,uint256):(uint256)",
-      [
-        ethereum.Value.fromAddress(param0),
-        ethereum.Value.fromAddress(param1),
-        ethereum.Value.fromUnsignedBigInt(param2)
-      ]
-    );
+  try_nonces(param0: Address, param1: BigInt): ethereum.CallResult<BigInt> {
+    let result = super.tryCall("nonces", "nonces(address,uint256):(uint256)", [
+      ethereum.Value.fromAddress(param0),
+      ethereum.Value.fromUnsignedBigInt(param1)
+    ]);
     if (result.reverted) {
       return new ethereum.CallResult();
     }
@@ -436,21 +486,23 @@ export class PIXFixedSale extends ethereum.SmartContract {
     return ethereum.CallResult.fromValue(value[0].toAddress());
   }
 
-  pixtTreasury(): PIXFixedSale__pixtTreasuryResult {
+  pixtTreasury(): PIXAuctionSaleNew__pixtTreasuryResult {
     let result = super.call(
       "pixtTreasury",
       "pixtTreasury():(address,uint256,uint256)",
       []
     );
 
-    return new PIXFixedSale__pixtTreasuryResult(
+    return new PIXAuctionSaleNew__pixtTreasuryResult(
       result[0].toAddress(),
       result[1].toBigInt(),
       result[2].toBigInt()
     );
   }
 
-  try_pixtTreasury(): ethereum.CallResult<PIXFixedSale__pixtTreasuryResult> {
+  try_pixtTreasury(): ethereum.CallResult<
+    PIXAuctionSaleNew__pixtTreasuryResult
+  > {
     let result = super.tryCall(
       "pixtTreasury",
       "pixtTreasury():(address,uint256,uint256)",
@@ -461,7 +513,7 @@ export class PIXFixedSale extends ethereum.SmartContract {
     }
     let value = result.value;
     return ethereum.CallResult.fromValue(
-      new PIXFixedSale__pixtTreasuryResult(
+      new PIXAuctionSaleNew__pixtTreasuryResult(
         value[0].toAddress(),
         value[1].toBigInt(),
         value[2].toBigInt()
@@ -469,26 +521,27 @@ export class PIXFixedSale extends ethereum.SmartContract {
     );
   }
 
-  saleInfo(param0: BigInt): PIXFixedSale__saleInfoResult {
+  saleInfo(param0: BigInt): PIXAuctionSaleNew__saleInfoResult {
     let result = super.call(
       "saleInfo",
-      "saleInfo(uint256):(address,address,uint256)",
+      "saleInfo(uint256):(address,address,uint64,uint256)",
       [ethereum.Value.fromUnsignedBigInt(param0)]
     );
 
-    return new PIXFixedSale__saleInfoResult(
+    return new PIXAuctionSaleNew__saleInfoResult(
       result[0].toAddress(),
       result[1].toAddress(),
-      result[2].toBigInt()
+      result[2].toBigInt(),
+      result[3].toBigInt()
     );
   }
 
   try_saleInfo(
     param0: BigInt
-  ): ethereum.CallResult<PIXFixedSale__saleInfoResult> {
+  ): ethereum.CallResult<PIXAuctionSaleNew__saleInfoResult> {
     let result = super.tryCall(
       "saleInfo",
-      "saleInfo(uint256):(address,address,uint256)",
+      "saleInfo(uint256):(address,address,uint64,uint256)",
       [ethereum.Value.fromUnsignedBigInt(param0)]
     );
     if (result.reverted) {
@@ -496,10 +549,44 @@ export class PIXFixedSale extends ethereum.SmartContract {
     }
     let value = result.value;
     return ethereum.CallResult.fromValue(
-      new PIXFixedSale__saleInfoResult(
+      new PIXAuctionSaleNew__saleInfoResult(
         value[0].toAddress(),
         value[1].toAddress(),
-        value[2].toBigInt()
+        value[2].toBigInt(),
+        value[3].toBigInt()
+      )
+    );
+  }
+
+  saleState(param0: BigInt): PIXAuctionSaleNew__saleStateResult {
+    let result = super.call(
+      "saleState",
+      "saleState(uint256):(address,uint256)",
+      [ethereum.Value.fromUnsignedBigInt(param0)]
+    );
+
+    return new PIXAuctionSaleNew__saleStateResult(
+      result[0].toAddress(),
+      result[1].toBigInt()
+    );
+  }
+
+  try_saleState(
+    param0: BigInt
+  ): ethereum.CallResult<PIXAuctionSaleNew__saleStateResult> {
+    let result = super.tryCall(
+      "saleState",
+      "saleState(uint256):(address,uint256)",
+      [ethereum.Value.fromUnsignedBigInt(param0)]
+    );
+    if (result.reverted) {
+      return new ethereum.CallResult();
+    }
+    let value = result.value;
+    return ethereum.CallResult.fromValue(
+      new PIXAuctionSaleNew__saleStateResult(
+        value[0].toAddress(),
+        value[1].toBigInt()
       )
     );
   }
@@ -554,6 +641,56 @@ export class CancelSaleCall__Outputs {
   _call: CancelSaleCall;
 
   constructor(call: CancelSaleCall) {
+    this._call = call;
+  }
+}
+
+export class EndAuctionCall extends ethereum.Call {
+  get inputs(): EndAuctionCall__Inputs {
+    return new EndAuctionCall__Inputs(this);
+  }
+
+  get outputs(): EndAuctionCall__Outputs {
+    return new EndAuctionCall__Outputs(this);
+  }
+}
+
+export class EndAuctionCall__Inputs {
+  _call: EndAuctionCall;
+
+  constructor(call: EndAuctionCall) {
+    this._call = call;
+  }
+
+  get buyer(): Address {
+    return this._call.inputValues[0].value.toAddress();
+  }
+
+  get price(): BigInt {
+    return this._call.inputValues[1].value.toBigInt();
+  }
+
+  get saleId(): BigInt {
+    return this._call.inputValues[2].value.toBigInt();
+  }
+
+  get v(): i32 {
+    return this._call.inputValues[3].value.toI32();
+  }
+
+  get r(): Bytes {
+    return this._call.inputValues[4].value.toBytes();
+  }
+
+  get s(): Bytes {
+    return this._call.inputValues[5].value.toBytes();
+  }
+}
+
+export class EndAuctionCall__Outputs {
+  _call: EndAuctionCall;
+
+  constructor(call: EndAuctionCall) {
     this._call = call;
   }
 }
@@ -638,36 +775,6 @@ export class OnERC721ReceivedCall__Outputs {
   }
 }
 
-export class PurchaseNFTCall extends ethereum.Call {
-  get inputs(): PurchaseNFTCall__Inputs {
-    return new PurchaseNFTCall__Inputs(this);
-  }
-
-  get outputs(): PurchaseNFTCall__Outputs {
-    return new PurchaseNFTCall__Outputs(this);
-  }
-}
-
-export class PurchaseNFTCall__Inputs {
-  _call: PurchaseNFTCall;
-
-  constructor(call: PurchaseNFTCall) {
-    this._call = call;
-  }
-
-  get _saleId(): BigInt {
-    return this._call.inputValues[0].value.toBigInt();
-  }
-}
-
-export class PurchaseNFTCall__Outputs {
-  _call: PurchaseNFTCall;
-
-  constructor(call: PurchaseNFTCall) {
-    this._call = call;
-  }
-}
-
 export class RenounceOwnershipCall extends ethereum.Call {
   get inputs(): RenounceOwnershipCall__Inputs {
     return new RenounceOwnershipCall__Inputs(this);
@@ -719,8 +826,12 @@ export class RequestSaleCall__Inputs {
     return this._call.inputValues[1].value.toBigIntArray();
   }
 
-  get _price(): BigInt {
+  get _endTime(): BigInt {
     return this._call.inputValues[2].value.toBigInt();
+  }
+
+  get _minPrice(): BigInt {
+    return this._call.inputValues[3].value.toBigInt();
   }
 }
 
@@ -732,56 +843,32 @@ export class RequestSaleCall__Outputs {
   }
 }
 
-export class SellNFTWithSignatureCall extends ethereum.Call {
-  get inputs(): SellNFTWithSignatureCall__Inputs {
-    return new SellNFTWithSignatureCall__Inputs(this);
+export class SetBurnHolderCall extends ethereum.Call {
+  get inputs(): SetBurnHolderCall__Inputs {
+    return new SetBurnHolderCall__Inputs(this);
   }
 
-  get outputs(): SellNFTWithSignatureCall__Outputs {
-    return new SellNFTWithSignatureCall__Outputs(this);
+  get outputs(): SetBurnHolderCall__Outputs {
+    return new SetBurnHolderCall__Outputs(this);
   }
 }
 
-export class SellNFTWithSignatureCall__Inputs {
-  _call: SellNFTWithSignatureCall;
+export class SetBurnHolderCall__Inputs {
+  _call: SetBurnHolderCall;
 
-  constructor(call: SellNFTWithSignatureCall) {
+  constructor(call: SetBurnHolderCall) {
     this._call = call;
   }
 
-  get buyer(): Address {
+  get holder(): Address {
     return this._call.inputValues[0].value.toAddress();
-  }
-
-  get price(): BigInt {
-    return this._call.inputValues[1].value.toBigInt();
-  }
-
-  get nftToken(): Address {
-    return this._call.inputValues[2].value.toAddress();
-  }
-
-  get tokenId(): BigInt {
-    return this._call.inputValues[3].value.toBigInt();
-  }
-
-  get v(): i32 {
-    return this._call.inputValues[4].value.toI32();
-  }
-
-  get r(): Bytes {
-    return this._call.inputValues[5].value.toBytes();
-  }
-
-  get s(): Bytes {
-    return this._call.inputValues[6].value.toBytes();
   }
 }
 
-export class SellNFTWithSignatureCall__Outputs {
-  _call: SellNFTWithSignatureCall;
+export class SetBurnHolderCall__Outputs {
+  _call: SetBurnHolderCall;
 
-  constructor(call: SellNFTWithSignatureCall) {
+  constructor(call: SetBurnHolderCall) {
     this._call = call;
   }
 }
@@ -913,7 +1000,7 @@ export class UpdateSaleCall__Inputs {
     return this._call.inputValues[0].value.toBigInt();
   }
 
-  get _price(): BigInt {
+  get _endTime(): BigInt {
     return this._call.inputValues[1].value.toBigInt();
   }
 }
