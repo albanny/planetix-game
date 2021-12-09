@@ -29,7 +29,7 @@ type PIXTransfer @entity {
 
   pix: PIX!
   transferId: BigInt!
-  from: Account!
+  from: Account
   to: Account!
 }
 
