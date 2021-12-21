@@ -241,12 +241,16 @@ export class Requested__Params {
     this._event = event;
   }
 
-  get account(): Address {
-    return this._event.parameters[0].value.toAddress();
+  get dropId(): BigInt {
+    return this._event.parameters[0].value.toBigInt();
+  }
+
+  get playerId(): BigInt {
+    return this._event.parameters[1].value.toBigInt();
   }
 
   get mode(): BigInt {
-    return this._event.parameters[1].value.toBigInt();
+    return this._event.parameters[2].value.toBigInt();
   }
 }
 
@@ -1022,36 +1026,6 @@ export class PIX extends ethereum.SmartContract {
   }
 }
 
-export class AddPackTypeCall extends ethereum.Call {
-  get inputs(): AddPackTypeCall__Inputs {
-    return new AddPackTypeCall__Inputs(this);
-  }
-
-  get outputs(): AddPackTypeCall__Outputs {
-    return new AddPackTypeCall__Outputs(this);
-  }
-}
-
-export class AddPackTypeCall__Inputs {
-  _call: AddPackTypeCall;
-
-  constructor(call: AddPackTypeCall) {
-    this._call = call;
-  }
-
-  get price(): BigInt {
-    return this._call.inputValues[0].value.toBigInt();
-  }
-}
-
-export class AddPackTypeCall__Outputs {
-  _call: AddPackTypeCall;
-
-  constructor(call: AddPackTypeCall) {
-    this._call = call;
-  }
-}
-
 export class ApproveCall extends ethereum.Call {
   get inputs(): ApproveCall__Inputs {
     return new ApproveCall__Inputs(this);
@@ -1302,32 +1276,6 @@ export class MintToCall__Outputs {
   }
 }
 
-export class RemovePackTypeCall extends ethereum.Call {
-  get inputs(): RemovePackTypeCall__Inputs {
-    return new RemovePackTypeCall__Inputs(this);
-  }
-
-  get outputs(): RemovePackTypeCall__Outputs {
-    return new RemovePackTypeCall__Outputs(this);
-  }
-}
-
-export class RemovePackTypeCall__Inputs {
-  _call: RemovePackTypeCall;
-
-  constructor(call: RemovePackTypeCall) {
-    this._call = call;
-  }
-}
-
-export class RemovePackTypeCall__Outputs {
-  _call: RemovePackTypeCall;
-
-  constructor(call: RemovePackTypeCall) {
-    this._call = call;
-  }
-}
-
 export class RenounceOwnershipCall extends ethereum.Call {
   get inputs(): RenounceOwnershipCall__Inputs {
     return new RenounceOwnershipCall__Inputs(this);
@@ -1379,8 +1327,12 @@ export class RequestMintCall__Inputs {
     return this._call.inputValues[1].value.toBigInt();
   }
 
-  get mode(): BigInt {
+  get playerId(): BigInt {
     return this._call.inputValues[2].value.toBigInt();
+  }
+
+  get mode(): BigInt {
+    return this._call.inputValues[3].value.toBigInt();
   }
 }
 
@@ -1644,6 +1596,40 @@ export class SetCombinePriceCall__Outputs {
   }
 }
 
+export class SetEndTimeCall extends ethereum.Call {
+  get inputs(): SetEndTimeCall__Inputs {
+    return new SetEndTimeCall__Inputs(this);
+  }
+
+  get outputs(): SetEndTimeCall__Outputs {
+    return new SetEndTimeCall__Outputs(this);
+  }
+}
+
+export class SetEndTimeCall__Inputs {
+  _call: SetEndTimeCall;
+
+  constructor(call: SetEndTimeCall) {
+    this._call = call;
+  }
+
+  get dropId(): BigInt {
+    return this._call.inputValues[0].value.toBigInt();
+  }
+
+  get endTime(): BigInt {
+    return this._call.inputValues[1].value.toBigInt();
+  }
+}
+
+export class SetEndTimeCall__Outputs {
+  _call: SetEndTimeCall;
+
+  constructor(call: SetEndTimeCall) {
+    this._call = call;
+  }
+}
+
 export class SetMediumLimitCountCall extends ethereum.Call {
   get inputs(): SetMediumLimitCountCall__Inputs {
     return new SetMediumLimitCountCall__Inputs(this);
@@ -1836,6 +1822,40 @@ export class SetPaymentTokenCall__Outputs {
   }
 }
 
+export class SetPlayerAddressCall extends ethereum.Call {
+  get inputs(): SetPlayerAddressCall__Inputs {
+    return new SetPlayerAddressCall__Inputs(this);
+  }
+
+  get outputs(): SetPlayerAddressCall__Outputs {
+    return new SetPlayerAddressCall__Outputs(this);
+  }
+}
+
+export class SetPlayerAddressCall__Inputs {
+  _call: SetPlayerAddressCall;
+
+  constructor(call: SetPlayerAddressCall) {
+    this._call = call;
+  }
+
+  get playerId(): BigInt {
+    return this._call.inputValues[0].value.toBigInt();
+  }
+
+  get account(): Address {
+    return this._call.inputValues[1].value.toAddress();
+  }
+}
+
+export class SetPlayerAddressCall__Outputs {
+  _call: SetPlayerAddressCall;
+
+  constructor(call: SetPlayerAddressCall) {
+    this._call = call;
+  }
+}
+
 export class SetSmallLimitCountCall extends ethereum.Call {
   get inputs(): SetSmallLimitCountCall__Inputs {
     return new SetSmallLimitCountCall__Inputs(this);
@@ -1862,6 +1882,40 @@ export class SetSmallLimitCountCall__Outputs {
   _call: SetSmallLimitCountCall;
 
   constructor(call: SetSmallLimitCountCall) {
+    this._call = call;
+  }
+}
+
+export class SetStartTimeCall extends ethereum.Call {
+  get inputs(): SetStartTimeCall__Inputs {
+    return new SetStartTimeCall__Inputs(this);
+  }
+
+  get outputs(): SetStartTimeCall__Outputs {
+    return new SetStartTimeCall__Outputs(this);
+  }
+}
+
+export class SetStartTimeCall__Inputs {
+  _call: SetStartTimeCall;
+
+  constructor(call: SetStartTimeCall) {
+    this._call = call;
+  }
+
+  get dropId(): BigInt {
+    return this._call.inputValues[0].value.toBigInt();
+  }
+
+  get startTime(): BigInt {
+    return this._call.inputValues[1].value.toBigInt();
+  }
+}
+
+export class SetStartTimeCall__Outputs {
+  _call: SetStartTimeCall;
+
+  constructor(call: SetStartTimeCall) {
     this._call = call;
   }
 }

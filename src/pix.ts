@@ -34,15 +34,9 @@ export function handlePIXRequested(event: Requested): void {
 
   let pixRequested = new PIXRequested(entity.value.toString());
   pixRequested.requestedId = entity.value;
-  pixRequested.account = event.params.account.toHexString();
+  pixRequested.dropId = event.params.dropId;
+  pixRequested.playerId = event.params.playerId;
   pixRequested.mode = event.params.mode;
-  let contract = PIXContract.bind(event.address);
-  let pendingPackDropId = contract.try_pendingPackDropId(event.params.account);
-  if (!pendingPackDropId.reverted) {
-    pixRequested.dropId = pendingPackDropId.value;
-  } else {
-    pixRequested.dropId = new BigInt(0);
-  }
   pixRequested.save();
 
   entity.value = entity.value.plus(BigInt.fromI32(1));
