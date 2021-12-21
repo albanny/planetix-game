@@ -8,6 +8,7 @@ type Account @entity {
 
   balance: BigInt!
   pixes: [PIX]! @derivedFrom(field: "account")
+  pixRequested: [PIXRequested]! @derivedFrom(field: "account")
   sales: [Sale]! @derivedFrom(field: "requestor")
   purchases: [Sale]! @derivedFrom(field: "taker")
   bids: [Bid]! @derivedFrom(field: "bidder")
@@ -31,6 +32,15 @@ type PIXTransfer @entity {
   transferId: BigInt!
   from: Account
   to: Account!
+}
+
+type PIXRequested @entity {
+  id: ID!
+
+  requestedId: BigInt!
+  account: Account!
+  mode: BigInt!
+  dropId: BigInt!
 }
 
 type Sale @entity {

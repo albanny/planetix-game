@@ -100,6 +100,15 @@ export class Account extends Entity {
     this.set("pixes", Value.fromStringArray(value));
   }
 
+  get pixRequested(): Array<string | null> {
+    let value = this.get("pixRequested");
+    return value.toStringArray();
+  }
+
+  set pixRequested(value: Array<string | null>) {
+    this.set("pixRequested", Value.fromStringArray(value));
+  }
+
   get sales(): Array<string | null> {
     let value = this.get("sales");
     return value.toStringArray();
@@ -293,6 +302,73 @@ export class PIXTransfer extends Entity {
 
   set to(value: string) {
     this.set("to", Value.fromString(value));
+  }
+}
+
+export class PIXRequested extends Entity {
+  constructor(id: string) {
+    super();
+    this.set("id", Value.fromString(id));
+  }
+
+  save(): void {
+    let id = this.get("id");
+    assert(id !== null, "Cannot save PIXRequested entity without an ID");
+    assert(
+      id.kind == ValueKind.STRING,
+      "Cannot save PIXRequested entity with non-string ID. " +
+        'Considering using .toHex() to convert the "id" to a string.'
+    );
+    store.set("PIXRequested", id.toString(), this);
+  }
+
+  static load(id: string): PIXRequested | null {
+    return store.get("PIXRequested", id) as PIXRequested | null;
+  }
+
+  get id(): string {
+    let value = this.get("id");
+    return value.toString();
+  }
+
+  set id(value: string) {
+    this.set("id", Value.fromString(value));
+  }
+
+  get requestedId(): BigInt {
+    let value = this.get("requestedId");
+    return value.toBigInt();
+  }
+
+  set requestedId(value: BigInt) {
+    this.set("requestedId", Value.fromBigInt(value));
+  }
+
+  get account(): string {
+    let value = this.get("account");
+    return value.toString();
+  }
+
+  set account(value: string) {
+    this.set("account", Value.fromString(value));
+  }
+
+  get mode(): BigInt {
+    let value = this.get("mode");
+    return value.toBigInt();
+  }
+
+  set mode(value: BigInt) {
+    this.set("mode", Value.fromBigInt(value));
+  }
+
+  get dropId(): BigInt {
+    let value = this.get("dropId");
+    return value.toBigInt();
+  }
+
+  set dropId(value: BigInt) {
+    this.set("dropId", Value.fromBigInt(value));
   }
 }
 

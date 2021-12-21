@@ -250,6 +250,28 @@ export class Requested__Params {
   }
 }
 
+export class TraderUpdated extends ethereum.Event {
+  get params(): TraderUpdated__Params {
+    return new TraderUpdated__Params(this);
+  }
+}
+
+export class TraderUpdated__Params {
+  _event: TraderUpdated;
+
+  constructor(event: TraderUpdated) {
+    this._event = event;
+  }
+
+  get trader(): Address {
+    return this._event.parameters[0].value.toAddress();
+  }
+
+  get approved(): boolean {
+    return this._event.parameters[1].value.toBoolean();
+  }
+}
+
 export class Transfer extends ethereum.Event {
   get params(): Transfer__Params {
     return new Transfer__Params(this);
@@ -422,6 +444,29 @@ export class PIX extends ethereum.SmartContract {
     return ethereum.CallResult.fromValue(value[0].toAddress());
   }
 
+  getLimitCount(mode: BigInt): BigInt {
+    let result = super.call(
+      "getLimitCount",
+      "getLimitCount(uint256):(uint256)",
+      [ethereum.Value.fromUnsignedBigInt(mode)]
+    );
+
+    return result[0].toBigInt();
+  }
+
+  try_getLimitCount(mode: BigInt): ethereum.CallResult<BigInt> {
+    let result = super.tryCall(
+      "getLimitCount",
+      "getLimitCount(uint256):(uint256)",
+      [ethereum.Value.fromUnsignedBigInt(mode)]
+    );
+    if (result.reverted) {
+      return new ethereum.CallResult();
+    }
+    let value = result.value;
+    return ethereum.CallResult.fromValue(value[0].toBigInt());
+  }
+
   isApprovedForAll(owner: Address, operator: Address): boolean {
     let result = super.call(
       "isApprovedForAll",
@@ -448,6 +493,25 @@ export class PIX extends ethereum.SmartContract {
     return ethereum.CallResult.fromValue(value[0].toBoolean());
   }
 
+  isTerritory(tokenId: BigInt): boolean {
+    let result = super.call("isTerritory", "isTerritory(uint256):(bool)", [
+      ethereum.Value.fromUnsignedBigInt(tokenId)
+    ]);
+
+    return result[0].toBoolean();
+  }
+
+  try_isTerritory(tokenId: BigInt): ethereum.CallResult<boolean> {
+    let result = super.tryCall("isTerritory", "isTerritory(uint256):(bool)", [
+      ethereum.Value.fromUnsignedBigInt(tokenId)
+    ]);
+    if (result.reverted) {
+      return new ethereum.CallResult();
+    }
+    let value = result.value;
+    return ethereum.CallResult.fromValue(value[0].toBoolean());
+  }
+
   lastTokenId(): BigInt {
     let result = super.call("lastTokenId", "lastTokenId():(uint256)", []);
 
@@ -456,6 +520,44 @@ export class PIX extends ethereum.SmartContract {
 
   try_lastTokenId(): ethereum.CallResult<BigInt> {
     let result = super.tryCall("lastTokenId", "lastTokenId():(uint256)", []);
+    if (result.reverted) {
+      return new ethereum.CallResult();
+    }
+    let value = result.value;
+    return ethereum.CallResult.fromValue(value[0].toBigInt());
+  }
+
+  limitForMedium(): BigInt {
+    let result = super.call("limitForMedium", "limitForMedium():(uint256)", []);
+
+    return result[0].toBigInt();
+  }
+
+  try_limitForMedium(): ethereum.CallResult<BigInt> {
+    let result = super.tryCall(
+      "limitForMedium",
+      "limitForMedium():(uint256)",
+      []
+    );
+    if (result.reverted) {
+      return new ethereum.CallResult();
+    }
+    let value = result.value;
+    return ethereum.CallResult.fromValue(value[0].toBigInt());
+  }
+
+  limitForSmall(): BigInt {
+    let result = super.call("limitForSmall", "limitForSmall():(uint256)", []);
+
+    return result[0].toBigInt();
+  }
+
+  try_limitForSmall(): ethereum.CallResult<BigInt> {
+    let result = super.tryCall(
+      "limitForSmall",
+      "limitForSmall():(uint256)",
+      []
+    );
     if (result.reverted) {
       return new ethereum.CallResult();
     }
@@ -588,6 +690,29 @@ export class PIX extends ethereum.SmartContract {
     }
     let value = result.value;
     return ethereum.CallResult.fromValue(value[0].toBoolean());
+  }
+
+  pendingPackDropId(param0: Address): BigInt {
+    let result = super.call(
+      "pendingPackDropId",
+      "pendingPackDropId(address):(uint256)",
+      [ethereum.Value.fromAddress(param0)]
+    );
+
+    return result[0].toBigInt();
+  }
+
+  try_pendingPackDropId(param0: Address): ethereum.CallResult<BigInt> {
+    let result = super.tryCall(
+      "pendingPackDropId",
+      "pendingPackDropId(address):(uint256)",
+      [ethereum.Value.fromAddress(param0)]
+    );
+    if (result.reverted) {
+      return new ethereum.CallResult();
+    }
+    let value = result.value;
+    return ethereum.CallResult.fromValue(value[0].toBigInt());
   }
 
   pendingPackType(param0: Address): BigInt {
@@ -860,6 +985,25 @@ export class PIX extends ethereum.SmartContract {
     return ethereum.CallResult.fromValue(value[0].toBigInt());
   }
 
+  traders(param0: Address): boolean {
+    let result = super.call("traders", "traders(address):(bool)", [
+      ethereum.Value.fromAddress(param0)
+    ]);
+
+    return result[0].toBoolean();
+  }
+
+  try_traders(param0: Address): ethereum.CallResult<boolean> {
+    let result = super.tryCall("traders", "traders(address):(bool)", [
+      ethereum.Value.fromAddress(param0)
+    ]);
+    if (result.reverted) {
+      return new ethereum.CallResult();
+    }
+    let value = result.value;
+    return ethereum.CallResult.fromValue(value[0].toBoolean());
+  }
+
   treasury(): PIX__treasuryResult {
     let result = super.call("treasury", "treasury():(address,uint256)", []);
 
@@ -875,6 +1019,36 @@ export class PIX extends ethereum.SmartContract {
     return ethereum.CallResult.fromValue(
       new PIX__treasuryResult(value[0].toAddress(), value[1].toBigInt())
     );
+  }
+}
+
+export class AddPackTypeCall extends ethereum.Call {
+  get inputs(): AddPackTypeCall__Inputs {
+    return new AddPackTypeCall__Inputs(this);
+  }
+
+  get outputs(): AddPackTypeCall__Outputs {
+    return new AddPackTypeCall__Outputs(this);
+  }
+}
+
+export class AddPackTypeCall__Inputs {
+  _call: AddPackTypeCall;
+
+  constructor(call: AddPackTypeCall) {
+    this._call = call;
+  }
+
+  get price(): BigInt {
+    return this._call.inputValues[0].value.toBigInt();
+  }
+}
+
+export class AddPackTypeCall__Outputs {
+  _call: AddPackTypeCall;
+
+  constructor(call: AddPackTypeCall) {
+    this._call = call;
   }
 }
 
@@ -1128,6 +1302,32 @@ export class MintToCall__Outputs {
   }
 }
 
+export class RemovePackTypeCall extends ethereum.Call {
+  get inputs(): RemovePackTypeCall__Inputs {
+    return new RemovePackTypeCall__Inputs(this);
+  }
+
+  get outputs(): RemovePackTypeCall__Outputs {
+    return new RemovePackTypeCall__Outputs(this);
+  }
+}
+
+export class RemovePackTypeCall__Inputs {
+  _call: RemovePackTypeCall;
+
+  constructor(call: RemovePackTypeCall) {
+    this._call = call;
+  }
+}
+
+export class RemovePackTypeCall__Outputs {
+  _call: RemovePackTypeCall;
+
+  constructor(call: RemovePackTypeCall) {
+    this._call = call;
+  }
+}
+
 export class RenounceOwnershipCall extends ethereum.Call {
   get inputs(): RenounceOwnershipCall__Inputs {
     return new RenounceOwnershipCall__Inputs(this);
@@ -1175,8 +1375,12 @@ export class RequestMintCall__Inputs {
     return this._call.inputValues[0].value.toAddress();
   }
 
-  get mode(): BigInt {
+  get dropId(): BigInt {
     return this._call.inputValues[1].value.toBigInt();
+  }
+
+  get mode(): BigInt {
+    return this._call.inputValues[2].value.toBigInt();
   }
 }
 
@@ -1440,6 +1644,36 @@ export class SetCombinePriceCall__Outputs {
   }
 }
 
+export class SetMediumLimitCountCall extends ethereum.Call {
+  get inputs(): SetMediumLimitCountCall__Inputs {
+    return new SetMediumLimitCountCall__Inputs(this);
+  }
+
+  get outputs(): SetMediumLimitCountCall__Outputs {
+    return new SetMediumLimitCountCall__Outputs(this);
+  }
+}
+
+export class SetMediumLimitCountCall__Inputs {
+  _call: SetMediumLimitCountCall;
+
+  constructor(call: SetMediumLimitCountCall) {
+    this._call = call;
+  }
+
+  get limit(): BigInt {
+    return this._call.inputValues[0].value.toBigInt();
+  }
+}
+
+export class SetMediumLimitCountCall__Outputs {
+  _call: SetMediumLimitCountCall;
+
+  constructor(call: SetMediumLimitCountCall) {
+    this._call = call;
+  }
+}
+
 export class SetModeratorCall extends ethereum.Call {
   get inputs(): SetModeratorCall__Inputs {
     return new SetModeratorCall__Inputs(this);
@@ -1602,6 +1836,36 @@ export class SetPaymentTokenCall__Outputs {
   }
 }
 
+export class SetSmallLimitCountCall extends ethereum.Call {
+  get inputs(): SetSmallLimitCountCall__Inputs {
+    return new SetSmallLimitCountCall__Inputs(this);
+  }
+
+  get outputs(): SetSmallLimitCountCall__Outputs {
+    return new SetSmallLimitCountCall__Outputs(this);
+  }
+}
+
+export class SetSmallLimitCountCall__Inputs {
+  _call: SetSmallLimitCountCall;
+
+  constructor(call: SetSmallLimitCountCall) {
+    this._call = call;
+  }
+
+  get limit(): BigInt {
+    return this._call.inputValues[0].value.toBigInt();
+  }
+}
+
+export class SetSmallLimitCountCall__Outputs {
+  _call: SetSmallLimitCountCall;
+
+  constructor(call: SetSmallLimitCountCall) {
+    this._call = call;
+  }
+}
+
 export class SetSwapManagerCall extends ethereum.Call {
   get inputs(): SetSwapManagerCall__Inputs {
     return new SetSwapManagerCall__Inputs(this);
@@ -1628,6 +1892,70 @@ export class SetSwapManagerCall__Outputs {
   _call: SetSwapManagerCall;
 
   constructor(call: SetSwapManagerCall) {
+    this._call = call;
+  }
+}
+
+export class SetTokenForPriceCall extends ethereum.Call {
+  get inputs(): SetTokenForPriceCall__Inputs {
+    return new SetTokenForPriceCall__Inputs(this);
+  }
+
+  get outputs(): SetTokenForPriceCall__Outputs {
+    return new SetTokenForPriceCall__Outputs(this);
+  }
+}
+
+export class SetTokenForPriceCall__Inputs {
+  _call: SetTokenForPriceCall;
+
+  constructor(call: SetTokenForPriceCall) {
+    this._call = call;
+  }
+
+  get _tokenForPrice(): Address {
+    return this._call.inputValues[0].value.toAddress();
+  }
+}
+
+export class SetTokenForPriceCall__Outputs {
+  _call: SetTokenForPriceCall;
+
+  constructor(call: SetTokenForPriceCall) {
+    this._call = call;
+  }
+}
+
+export class SetTraderCall extends ethereum.Call {
+  get inputs(): SetTraderCall__Inputs {
+    return new SetTraderCall__Inputs(this);
+  }
+
+  get outputs(): SetTraderCall__Outputs {
+    return new SetTraderCall__Outputs(this);
+  }
+}
+
+export class SetTraderCall__Inputs {
+  _call: SetTraderCall;
+
+  constructor(call: SetTraderCall) {
+    this._call = call;
+  }
+
+  get trader(): Address {
+    return this._call.inputValues[0].value.toAddress();
+  }
+
+  get approved(): boolean {
+    return this._call.inputValues[1].value.toBoolean();
+  }
+}
+
+export class SetTraderCall__Outputs {
+  _call: SetTraderCall;
+
+  constructor(call: SetTraderCall) {
     this._call = call;
   }
 }
