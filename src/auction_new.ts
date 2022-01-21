@@ -176,7 +176,7 @@ export function handleAuctionPurchased(event: Purchased): void {
 }
 
 function getSaleId(id: BigInt): string {
-  return "A_N" + id.toString();
+  return "N" + id.toString();
 }
 
 function getPIXId(id: BigInt): string {
