@@ -32,6 +32,7 @@ export function handleSaleRequested(event: SaleRequested): void {
   sale.isActive = true;
   sale.requestor = event.params.seller.toHexString();
   sale.tokenIds = event.params.tokenIds;
+  sale.tokens = BigInt.fromI32(sale.tokenIds.length);
   sale.price = event.params.price;
   sale.save();
 
