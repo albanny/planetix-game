@@ -481,6 +481,15 @@ export class Sale extends Entity {
     }
   }
 
+  get createTimestamp(): BigInt {
+    let value = this.get("createTimestamp");
+    return value.toBigInt();
+  }
+
+  set createTimestamp(value: BigInt) {
+    this.set("createTimestamp", Value.fromBigInt(value));
+  }
+
   get taker(): string | null {
     let value = this.get("taker");
     if (value === null || value.kind == ValueKind.NULL) {

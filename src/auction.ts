@@ -42,6 +42,7 @@ export function handleAuctionRequested(event: SaleRequested): void {
   sale.tokens = BigInt.fromI32(sale.tokenIds.length);
   sale.price = event.params.price;
   sale.endTime = event.params.endTime;
+  sale.createTimestamp = event.block.timestamp;
   sale.save();
 
   let tokenIds = sale.tokenIds as Array<BigInt>;
