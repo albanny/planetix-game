@@ -34,6 +34,7 @@ export function handleSaleRequested(event: SaleRequested): void {
   sale.tokenIds = event.params.tokenIds;
   sale.tokens = BigInt.fromI32(sale.tokenIds.length);
   sale.price = event.params.price;
+  sale.createTimestamp = event.block.timestamp;
   sale.save();
 
   let tokenIds = sale.tokenIds as Array<BigInt>;

@@ -53,6 +53,7 @@ type Sale @entity {
   price: BigInt!
   category: BigInt
   size: BigInt
+  createTimestamp: BigInt!
 
   taker: Account
   endTime: BigInt
