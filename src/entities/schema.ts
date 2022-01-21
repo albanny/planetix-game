@@ -429,6 +429,15 @@ export class Sale extends Entity {
     this.set("tokenIds", Value.fromBigIntArray(value));
   }
 
+  get tokens(): BigInt {
+    let value = this.get("tokens");
+    return value.toBigInt();
+  }
+
+  set tokens(value: BigInt) {
+    this.set("tokens", Value.fromBigInt(value));
+  }
+
   get price(): BigInt {
     let value = this.get("price");
     return value.toBigInt();
