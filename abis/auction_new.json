@@ -287,8 +287,28 @@
   },
   {
     "inputs": [],
+    "name": "operator",
+    "outputs": [{ "internalType": "address", "name": "", "type": "address" }],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
     "name": "owner",
     "outputs": [{ "internalType": "address", "name": "", "type": "address" }],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "pixMerkleMinter",
+    "outputs": [
+      {
+        "internalType": "contract IPIXMerkleMinter",
+        "name": "",
+        "type": "address"
+      }
+    ],
     "stateMutability": "view",
     "type": "function"
   },
@@ -363,6 +383,28 @@
       { "internalType": "address", "name": "holder", "type": "address" }
     ],
     "name": "setBurnHolder",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      { "internalType": "address", "name": "_operator", "type": "address" }
+    ],
+    "name": "setOperator",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "_pixMerkleMinter",
+        "type": "address"
+      }
+    ],
+    "name": "setPixMerkleMinter",
     "outputs": [],
     "stateMutability": "nonpayable",
     "type": "function"

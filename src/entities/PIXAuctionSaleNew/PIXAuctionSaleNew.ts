@@ -441,6 +441,21 @@ export class PIXAuctionSaleNew extends ethereum.SmartContract {
     return ethereum.CallResult.fromValue(value[0].toBytes());
   }
 
+  operator(): Address {
+    let result = super.call("operator", "operator():(address)", []);
+
+    return result[0].toAddress();
+  }
+
+  try_operator(): ethereum.CallResult<Address> {
+    let result = super.tryCall("operator", "operator():(address)", []);
+    if (result.reverted) {
+      return new ethereum.CallResult();
+    }
+    let value = result.value;
+    return ethereum.CallResult.fromValue(value[0].toAddress());
+  }
+
   owner(): Address {
     let result = super.call("owner", "owner():(address)", []);
 
@@ -449,6 +464,29 @@ export class PIXAuctionSaleNew extends ethereum.SmartContract {
 
   try_owner(): ethereum.CallResult<Address> {
     let result = super.tryCall("owner", "owner():(address)", []);
+    if (result.reverted) {
+      return new ethereum.CallResult();
+    }
+    let value = result.value;
+    return ethereum.CallResult.fromValue(value[0].toAddress());
+  }
+
+  pixMerkleMinter(): Address {
+    let result = super.call(
+      "pixMerkleMinter",
+      "pixMerkleMinter():(address)",
+      []
+    );
+
+    return result[0].toAddress();
+  }
+
+  try_pixMerkleMinter(): ethereum.CallResult<Address> {
+    let result = super.tryCall(
+      "pixMerkleMinter",
+      "pixMerkleMinter():(address)",
+      []
+    );
     if (result.reverted) {
       return new ethereum.CallResult();
     }
@@ -869,6 +907,66 @@ export class SetBurnHolderCall__Outputs {
   _call: SetBurnHolderCall;
 
   constructor(call: SetBurnHolderCall) {
+    this._call = call;
+  }
+}
+
+export class SetOperatorCall extends ethereum.Call {
+  get inputs(): SetOperatorCall__Inputs {
+    return new SetOperatorCall__Inputs(this);
+  }
+
+  get outputs(): SetOperatorCall__Outputs {
+    return new SetOperatorCall__Outputs(this);
+  }
+}
+
+export class SetOperatorCall__Inputs {
+  _call: SetOperatorCall;
+
+  constructor(call: SetOperatorCall) {
+    this._call = call;
+  }
+
+  get _operator(): Address {
+    return this._call.inputValues[0].value.toAddress();
+  }
+}
+
+export class SetOperatorCall__Outputs {
+  _call: SetOperatorCall;
+
+  constructor(call: SetOperatorCall) {
+    this._call = call;
+  }
+}
+
+export class SetPixMerkleMinterCall extends ethereum.Call {
+  get inputs(): SetPixMerkleMinterCall__Inputs {
+    return new SetPixMerkleMinterCall__Inputs(this);
+  }
+
+  get outputs(): SetPixMerkleMinterCall__Outputs {
+    return new SetPixMerkleMinterCall__Outputs(this);
+  }
+}
+
+export class SetPixMerkleMinterCall__Inputs {
+  _call: SetPixMerkleMinterCall;
+
+  constructor(call: SetPixMerkleMinterCall) {
+    this._call = call;
+  }
+
+  get _pixMerkleMinter(): Address {
+    return this._call.inputValues[0].value.toAddress();
+  }
+}
+
+export class SetPixMerkleMinterCall__Outputs {
+  _call: SetPixMerkleMinterCall;
+
+  constructor(call: SetPixMerkleMinterCall) {
     this._call = call;
   }
 }
