@@ -344,6 +344,20 @@
     "type": "function"
   },
   {
+    "inputs": [{ "internalType": "address", "name": "", "type": "address" }],
+    "name": "blacklistedAddresses",
+    "outputs": [{ "internalType": "bool", "name": "", "type": "bool" }],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [{ "internalType": "address", "name": "to", "type": "address" }],
+    "name": "cancelRequest",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
     "inputs": [
       { "internalType": "uint256[]", "name": "tokenIds", "type": "uint256[]" }
     ],
@@ -369,13 +383,27 @@
     "type": "function"
   },
   {
-    "inputs": [
-      { "internalType": "address", "name": "to", "type": "address" },
-      { "internalType": "uint256", "name": "mode", "type": "uint256" }
-    ],
+    "inputs": [{ "internalType": "address", "name": "to", "type": "address" }],
     "name": "completeRequest",
     "outputs": [],
     "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }],
+    "name": "dropInfos",
+    "outputs": [
+      { "internalType": "uint256", "name": "maxCount", "type": "uint256" },
+      { "internalType": "uint256", "name": "requestCount", "type": "uint256" },
+      {
+        "internalType": "uint256",
+        "name": "limitForPlayer",
+        "type": "uint256"
+      },
+      { "internalType": "uint256", "name": "startTime", "type": "uint256" },
+      { "internalType": "uint256", "name": "endTime", "type": "uint256" }
+    ],
+    "stateMutability": "view",
     "type": "function"
   },
   {
@@ -384,17 +412,6 @@
     ],
     "name": "getApproved",
     "outputs": [{ "internalType": "address", "name": "", "type": "address" }],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      { "internalType": "uint256", "name": "mode", "type": "uint256" }
-    ],
-    "name": "getLimitCount",
-    "outputs": [
-      { "internalType": "uint256", "name": "limit", "type": "uint256" }
-    ],
     "stateMutability": "view",
     "type": "function"
   },
@@ -414,6 +431,16 @@
       { "internalType": "address", "name": "operator", "type": "address" }
     ],
     "name": "isApprovedForAll",
+    "outputs": [{ "internalType": "bool", "name": "", "type": "bool" }],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      { "internalType": "uint256", "name": "playerId", "type": "uint256" },
+      { "internalType": "uint256", "name": "dropId", "type": "uint256" }
+    ],
+    "name": "isDisabledDropForPlayer",
     "outputs": [{ "internalType": "bool", "name": "", "type": "bool" }],
     "stateMutability": "view",
     "type": "function"
@@ -515,6 +542,26 @@
   },
   {
     "inputs": [{ "internalType": "address", "name": "", "type": "address" }],
+    "name": "packRequests",
+    "outputs": [
+      { "internalType": "uint256", "name": "playerId", "type": "uint256" },
+      { "internalType": "uint256", "name": "dropId", "type": "uint256" }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      { "internalType": "uint256", "name": "", "type": "uint256" },
+      { "internalType": "uint256", "name": "", "type": "uint256" }
+    ],
+    "name": "packsPurchased",
+    "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [{ "internalType": "address", "name": "", "type": "address" }],
     "name": "paymentTokens",
     "outputs": [{ "internalType": "bool", "name": "", "type": "bool" }],
     "stateMutability": "view",
@@ -578,6 +625,26 @@
     ],
     "name": "pixesInLand",
     "outputs": [{ "internalType": "bool", "name": "inside", "type": "bool" }],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      { "internalType": "uint256", "name": "", "type": "uint256" },
+      { "internalType": "uint256", "name": "", "type": "uint256" }
+    ],
+    "name": "relatedDrops",
+    "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      { "internalType": "uint256", "name": "", "type": "uint256" },
+      { "internalType": "uint256", "name": "", "type": "uint256" }
+    ],
+    "name": "relatedDropsStatus",
+    "outputs": [{ "internalType": "bool", "name": "", "type": "bool" }],
     "stateMutability": "view",
     "type": "function"
   },
@@ -680,6 +747,16 @@
   },
   {
     "inputs": [
+      { "internalType": "address", "name": "account", "type": "address" },
+      { "internalType": "bool", "name": "blacklisted", "type": "bool" }
+    ],
+    "name": "setBlacklistedAddress",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
       { "internalType": "uint256", "name": "price", "type": "uint256" }
     ],
     "name": "setCombinePrice",
@@ -690,18 +767,28 @@
   {
     "inputs": [
       { "internalType": "uint256", "name": "dropId", "type": "uint256" },
-      { "internalType": "uint256", "name": "endTime", "type": "uint256" }
+      {
+        "components": [
+          { "internalType": "uint256", "name": "maxCount", "type": "uint256" },
+          {
+            "internalType": "uint256",
+            "name": "requestCount",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "limitForPlayer",
+            "type": "uint256"
+          },
+          { "internalType": "uint256", "name": "startTime", "type": "uint256" },
+          { "internalType": "uint256", "name": "endTime", "type": "uint256" }
+        ],
+        "internalType": "struct IPIX.DropInfo",
+        "name": "drop",
+        "type": "tuple"
+      }
     ],
-    "name": "setEndTime",
-    "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      { "internalType": "uint256", "name": "limit", "type": "uint256" }
-    ],
-    "name": "setMediumLimitCount",
+    "name": "setDropInfo",
     "outputs": [],
     "stateMutability": "nonpayable",
     "type": "function"
@@ -756,29 +843,10 @@
   },
   {
     "inputs": [
-      { "internalType": "uint256", "name": "playerId", "type": "uint256" },
-      { "internalType": "address", "name": "account", "type": "address" }
+      { "internalType": "uint256", "name": "drop1", "type": "uint256" },
+      { "internalType": "uint256", "name": "drop2", "type": "uint256" }
     ],
-    "name": "setPlayerAddress",
-    "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      { "internalType": "uint256", "name": "limit", "type": "uint256" }
-    ],
-    "name": "setSmallLimitCount",
-    "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      { "internalType": "uint256", "name": "dropId", "type": "uint256" },
-      { "internalType": "uint256", "name": "startTime", "type": "uint256" }
-    ],
-    "name": "setStartTime",
+    "name": "setRelationForDrops",
     "outputs": [],
     "stateMutability": "nonpayable",
     "type": "function"

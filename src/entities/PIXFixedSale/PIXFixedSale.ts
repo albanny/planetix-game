@@ -265,6 +265,21 @@ export class PIXFixedSale extends ethereum.SmartContract {
     return new PIXFixedSale("PIXFixedSale", address);
   }
 
+  burnHolder(): Address {
+    let result = super.call("burnHolder", "burnHolder():(address)", []);
+
+    return result[0].toAddress();
+  }
+
+  try_burnHolder(): ethereum.CallResult<Address> {
+    let result = super.tryCall("burnHolder", "burnHolder():(address)", []);
+    if (result.reverted) {
+      return new ethereum.CallResult();
+    }
+    let value = result.value;
+    return ethereum.CallResult.fromValue(value[0].toAddress());
+  }
+
   landTreasury(): PIXFixedSale__landTreasuryResult {
     let result = super.call(
       "landTreasury",
@@ -348,6 +363,38 @@ export class PIXFixedSale extends ethereum.SmartContract {
     return ethereum.CallResult.fromValue(value[0].toBigInt());
   }
 
+  noncesForSale(param0: Address, param1: BigInt): BigInt {
+    let result = super.call(
+      "noncesForSale",
+      "noncesForSale(address,uint256):(uint256)",
+      [
+        ethereum.Value.fromAddress(param0),
+        ethereum.Value.fromUnsignedBigInt(param1)
+      ]
+    );
+
+    return result[0].toBigInt();
+  }
+
+  try_noncesForSale(
+    param0: Address,
+    param1: BigInt
+  ): ethereum.CallResult<BigInt> {
+    let result = super.tryCall(
+      "noncesForSale",
+      "noncesForSale(address,uint256):(uint256)",
+      [
+        ethereum.Value.fromAddress(param0),
+        ethereum.Value.fromUnsignedBigInt(param1)
+      ]
+    );
+    if (result.reverted) {
+      return new ethereum.CallResult();
+    }
+    let value = result.value;
+    return ethereum.CallResult.fromValue(value[0].toBigInt());
+  }
+
   onERC721Received(
     param0: Address,
     param1: Address,
@@ -399,6 +446,29 @@ export class PIXFixedSale extends ethereum.SmartContract {
 
   try_owner(): ethereum.CallResult<Address> {
     let result = super.tryCall("owner", "owner():(address)", []);
+    if (result.reverted) {
+      return new ethereum.CallResult();
+    }
+    let value = result.value;
+    return ethereum.CallResult.fromValue(value[0].toAddress());
+  }
+
+  pixMerkleMinter(): Address {
+    let result = super.call(
+      "pixMerkleMinter",
+      "pixMerkleMinter():(address)",
+      []
+    );
+
+    return result[0].toAddress();
+  }
+
+  try_pixMerkleMinter(): ethereum.CallResult<Address> {
+    let result = super.tryCall(
+      "pixMerkleMinter",
+      "pixMerkleMinter():(address)",
+      []
+    );
     if (result.reverted) {
       return new ethereum.CallResult();
     }
@@ -782,6 +852,188 @@ export class SellNFTWithSignatureCall__Outputs {
   _call: SellNFTWithSignatureCall;
 
   constructor(call: SellNFTWithSignatureCall) {
+    this._call = call;
+  }
+}
+
+export class SellNFTWithSignatureWithHashCall extends ethereum.Call {
+  get inputs(): SellNFTWithSignatureWithHashCall__Inputs {
+    return new SellNFTWithSignatureWithHashCall__Inputs(this);
+  }
+
+  get outputs(): SellNFTWithSignatureWithHashCall__Outputs {
+    return new SellNFTWithSignatureWithHashCall__Outputs(this);
+  }
+}
+
+export class SellNFTWithSignatureWithHashCall__Inputs {
+  _call: SellNFTWithSignatureWithHashCall;
+
+  constructor(call: SellNFTWithSignatureWithHashCall) {
+    this._call = call;
+  }
+
+  get buyer(): Address {
+    return this._call.inputValues[0].value.toAddress();
+  }
+
+  get price(): BigInt {
+    return this._call.inputValues[1].value.toBigInt();
+  }
+
+  get info(): SellNFTWithSignatureWithHashCallInfoStruct {
+    return this._call.inputValues[2].value.toTuple() as SellNFTWithSignatureWithHashCallInfoStruct;
+  }
+
+  get merkleRoot(): Bytes {
+    return this._call.inputValues[3].value.toBytes();
+  }
+
+  get merkleProofs(): Array<Bytes> {
+    return this._call.inputValues[4].value.toBytesArray();
+  }
+
+  get v(): i32 {
+    return this._call.inputValues[5].value.toI32();
+  }
+
+  get r(): Bytes {
+    return this._call.inputValues[6].value.toBytes();
+  }
+
+  get s(): Bytes {
+    return this._call.inputValues[7].value.toBytes();
+  }
+}
+
+export class SellNFTWithSignatureWithHashCall__Outputs {
+  _call: SellNFTWithSignatureWithHashCall;
+
+  constructor(call: SellNFTWithSignatureWithHashCall) {
+    this._call = call;
+  }
+}
+
+export class SellNFTWithSignatureWithHashCallInfoStruct extends ethereum.Tuple {
+  get pixId(): BigInt {
+    return this[0].toBigInt();
+  }
+
+  get category(): i32 {
+    return this[1].toI32();
+  }
+
+  get size(): i32 {
+    return this[2].toI32();
+  }
+}
+
+export class SellSaleWithSignatureCall extends ethereum.Call {
+  get inputs(): SellSaleWithSignatureCall__Inputs {
+    return new SellSaleWithSignatureCall__Inputs(this);
+  }
+
+  get outputs(): SellSaleWithSignatureCall__Outputs {
+    return new SellSaleWithSignatureCall__Outputs(this);
+  }
+}
+
+export class SellSaleWithSignatureCall__Inputs {
+  _call: SellSaleWithSignatureCall;
+
+  constructor(call: SellSaleWithSignatureCall) {
+    this._call = call;
+  }
+
+  get buyer(): Address {
+    return this._call.inputValues[0].value.toAddress();
+  }
+
+  get price(): BigInt {
+    return this._call.inputValues[1].value.toBigInt();
+  }
+
+  get saleId(): BigInt {
+    return this._call.inputValues[2].value.toBigInt();
+  }
+
+  get v(): i32 {
+    return this._call.inputValues[3].value.toI32();
+  }
+
+  get r(): Bytes {
+    return this._call.inputValues[4].value.toBytes();
+  }
+
+  get s(): Bytes {
+    return this._call.inputValues[5].value.toBytes();
+  }
+}
+
+export class SellSaleWithSignatureCall__Outputs {
+  _call: SellSaleWithSignatureCall;
+
+  constructor(call: SellSaleWithSignatureCall) {
+    this._call = call;
+  }
+}
+
+export class SetBurnHolderCall extends ethereum.Call {
+  get inputs(): SetBurnHolderCall__Inputs {
+    return new SetBurnHolderCall__Inputs(this);
+  }
+
+  get outputs(): SetBurnHolderCall__Outputs {
+    return new SetBurnHolderCall__Outputs(this);
+  }
+}
+
+export class SetBurnHolderCall__Inputs {
+  _call: SetBurnHolderCall;
+
+  constructor(call: SetBurnHolderCall) {
+    this._call = call;
+  }
+
+  get holder(): Address {
+    return this._call.inputValues[0].value.toAddress();
+  }
+}
+
+export class SetBurnHolderCall__Outputs {
+  _call: SetBurnHolderCall;
+
+  constructor(call: SetBurnHolderCall) {
+    this._call = call;
+  }
+}
+
+export class SetPixMerkleMinterCall extends ethereum.Call {
+  get inputs(): SetPixMerkleMinterCall__Inputs {
+    return new SetPixMerkleMinterCall__Inputs(this);
+  }
+
+  get outputs(): SetPixMerkleMinterCall__Outputs {
+    return new SetPixMerkleMinterCall__Outputs(this);
+  }
+}
+
+export class SetPixMerkleMinterCall__Inputs {
+  _call: SetPixMerkleMinterCall;
+
+  constructor(call: SetPixMerkleMinterCall) {
+    this._call = call;
+  }
+
+  get _pixMerkleMinter(): Address {
+    return this._call.inputValues[0].value.toAddress();
+  }
+}
+
+export class SetPixMerkleMinterCall__Outputs {
+  _call: SetPixMerkleMinterCall;
+
+  constructor(call: SetPixMerkleMinterCall) {
     this._call = call;
   }
 }

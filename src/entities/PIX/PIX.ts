@@ -324,6 +324,55 @@ export class TreasuryUpdated__Params {
   }
 }
 
+export class PIX__dropInfosResult {
+  value0: BigInt;
+  value1: BigInt;
+  value2: BigInt;
+  value3: BigInt;
+  value4: BigInt;
+
+  constructor(
+    value0: BigInt,
+    value1: BigInt,
+    value2: BigInt,
+    value3: BigInt,
+    value4: BigInt
+  ) {
+    this.value0 = value0;
+    this.value1 = value1;
+    this.value2 = value2;
+    this.value3 = value3;
+    this.value4 = value4;
+  }
+
+  toMap(): TypedMap<string, ethereum.Value> {
+    let map = new TypedMap<string, ethereum.Value>();
+    map.set("value0", ethereum.Value.fromUnsignedBigInt(this.value0));
+    map.set("value1", ethereum.Value.fromUnsignedBigInt(this.value1));
+    map.set("value2", ethereum.Value.fromUnsignedBigInt(this.value2));
+    map.set("value3", ethereum.Value.fromUnsignedBigInt(this.value3));
+    map.set("value4", ethereum.Value.fromUnsignedBigInt(this.value4));
+    return map;
+  }
+}
+
+export class PIX__packRequestsResult {
+  value0: BigInt;
+  value1: BigInt;
+
+  constructor(value0: BigInt, value1: BigInt) {
+    this.value0 = value0;
+    this.value1 = value1;
+  }
+
+  toMap(): TypedMap<string, ethereum.Value> {
+    let map = new TypedMap<string, ethereum.Value>();
+    map.set("value0", ethereum.Value.fromUnsignedBigInt(this.value0));
+    map.set("value1", ethereum.Value.fromUnsignedBigInt(this.value1));
+    return map;
+  }
+}
+
 export class PIX__pixInfosResult {
   value0: BigInt;
   value1: i32;
@@ -391,6 +440,29 @@ export class PIX extends ethereum.SmartContract {
     return ethereum.CallResult.fromValue(value[0].toBigInt());
   }
 
+  blacklistedAddresses(param0: Address): boolean {
+    let result = super.call(
+      "blacklistedAddresses",
+      "blacklistedAddresses(address):(bool)",
+      [ethereum.Value.fromAddress(param0)]
+    );
+
+    return result[0].toBoolean();
+  }
+
+  try_blacklistedAddresses(param0: Address): ethereum.CallResult<boolean> {
+    let result = super.tryCall(
+      "blacklistedAddresses",
+      "blacklistedAddresses(address):(bool)",
+      [ethereum.Value.fromAddress(param0)]
+    );
+    if (result.reverted) {
+      return new ethereum.CallResult();
+    }
+    let value = result.value;
+    return ethereum.CallResult.fromValue(value[0].toBoolean());
+  }
+
   combineCounts(param0: i32): i32 {
     let result = super.call("combineCounts", "combineCounts(uint8):(uint16)", [
       ethereum.Value.fromUnsignedBigInt(BigInt.fromI32(param0))
@@ -427,6 +499,43 @@ export class PIX extends ethereum.SmartContract {
     return ethereum.CallResult.fromValue(value[0].toBigInt());
   }
 
+  dropInfos(param0: BigInt): PIX__dropInfosResult {
+    let result = super.call(
+      "dropInfos",
+      "dropInfos(uint256):(uint256,uint256,uint256,uint256,uint256)",
+      [ethereum.Value.fromUnsignedBigInt(param0)]
+    );
+
+    return new PIX__dropInfosResult(
+      result[0].toBigInt(),
+      result[1].toBigInt(),
+      result[2].toBigInt(),
+      result[3].toBigInt(),
+      result[4].toBigInt()
+    );
+  }
+
+  try_dropInfos(param0: BigInt): ethereum.CallResult<PIX__dropInfosResult> {
+    let result = super.tryCall(
+      "dropInfos",
+      "dropInfos(uint256):(uint256,uint256,uint256,uint256,uint256)",
+      [ethereum.Value.fromUnsignedBigInt(param0)]
+    );
+    if (result.reverted) {
+      return new ethereum.CallResult();
+    }
+    let value = result.value;
+    return ethereum.CallResult.fromValue(
+      new PIX__dropInfosResult(
+        value[0].toBigInt(),
+        value[1].toBigInt(),
+        value[2].toBigInt(),
+        value[3].toBigInt(),
+        value[4].toBigInt()
+      )
+    );
+  }
+
   getApproved(tokenId: BigInt): Address {
     let result = super.call("getApproved", "getApproved(uint256):(address)", [
       ethereum.Value.fromUnsignedBigInt(tokenId)
@@ -448,29 +557,6 @@ export class PIX extends ethereum.SmartContract {
     return ethereum.CallResult.fromValue(value[0].toAddress());
   }
 
-  getLimitCount(mode: BigInt): BigInt {
-    let result = super.call(
-      "getLimitCount",
-      "getLimitCount(uint256):(uint256)",
-      [ethereum.Value.fromUnsignedBigInt(mode)]
-    );
-
-    return result[0].toBigInt();
-  }
-
-  try_getLimitCount(mode: BigInt): ethereum.CallResult<BigInt> {
-    let result = super.tryCall(
-      "getLimitCount",
-      "getLimitCount(uint256):(uint256)",
-      [ethereum.Value.fromUnsignedBigInt(mode)]
-    );
-    if (result.reverted) {
-      return new ethereum.CallResult();
-    }
-    let value = result.value;
-    return ethereum.CallResult.fromValue(value[0].toBigInt());
-  }
-
   isApprovedForAll(owner: Address, operator: Address): boolean {
     let result = super.call(
       "isApprovedForAll",
@@ -489,6 +575,38 @@ export class PIX extends ethereum.SmartContract {
       "isApprovedForAll",
       "isApprovedForAll(address,address):(bool)",
       [ethereum.Value.fromAddress(owner), ethereum.Value.fromAddress(operator)]
+    );
+    if (result.reverted) {
+      return new ethereum.CallResult();
+    }
+    let value = result.value;
+    return ethereum.CallResult.fromValue(value[0].toBoolean());
+  }
+
+  isDisabledDropForPlayer(playerId: BigInt, dropId: BigInt): boolean {
+    let result = super.call(
+      "isDisabledDropForPlayer",
+      "isDisabledDropForPlayer(uint256,uint256):(bool)",
+      [
+        ethereum.Value.fromUnsignedBigInt(playerId),
+        ethereum.Value.fromUnsignedBigInt(dropId)
+      ]
+    );
+
+    return result[0].toBoolean();
+  }
+
+  try_isDisabledDropForPlayer(
+    playerId: BigInt,
+    dropId: BigInt
+  ): ethereum.CallResult<boolean> {
+    let result = super.tryCall(
+      "isDisabledDropForPlayer",
+      "isDisabledDropForPlayer(uint256,uint256):(bool)",
+      [
+        ethereum.Value.fromUnsignedBigInt(playerId),
+        ethereum.Value.fromUnsignedBigInt(dropId)
+      ]
     );
     if (result.reverted) {
       return new ethereum.CallResult();
@@ -675,6 +793,68 @@ export class PIX extends ethereum.SmartContract {
     return ethereum.CallResult.fromValue(value[0].toBigInt());
   }
 
+  packRequests(param0: Address): PIX__packRequestsResult {
+    let result = super.call(
+      "packRequests",
+      "packRequests(address):(uint256,uint256)",
+      [ethereum.Value.fromAddress(param0)]
+    );
+
+    return new PIX__packRequestsResult(
+      result[0].toBigInt(),
+      result[1].toBigInt()
+    );
+  }
+
+  try_packRequests(
+    param0: Address
+  ): ethereum.CallResult<PIX__packRequestsResult> {
+    let result = super.tryCall(
+      "packRequests",
+      "packRequests(address):(uint256,uint256)",
+      [ethereum.Value.fromAddress(param0)]
+    );
+    if (result.reverted) {
+      return new ethereum.CallResult();
+    }
+    let value = result.value;
+    return ethereum.CallResult.fromValue(
+      new PIX__packRequestsResult(value[0].toBigInt(), value[1].toBigInt())
+    );
+  }
+
+  packsPurchased(param0: BigInt, param1: BigInt): BigInt {
+    let result = super.call(
+      "packsPurchased",
+      "packsPurchased(uint256,uint256):(uint256)",
+      [
+        ethereum.Value.fromUnsignedBigInt(param0),
+        ethereum.Value.fromUnsignedBigInt(param1)
+      ]
+    );
+
+    return result[0].toBigInt();
+  }
+
+  try_packsPurchased(
+    param0: BigInt,
+    param1: BigInt
+  ): ethereum.CallResult<BigInt> {
+    let result = super.tryCall(
+      "packsPurchased",
+      "packsPurchased(uint256,uint256):(uint256)",
+      [
+        ethereum.Value.fromUnsignedBigInt(param0),
+        ethereum.Value.fromUnsignedBigInt(param1)
+      ]
+    );
+    if (result.reverted) {
+      return new ethereum.CallResult();
+    }
+    let value = result.value;
+    return ethereum.CallResult.fromValue(value[0].toBigInt());
+  }
+
   paymentTokens(param0: Address): boolean {
     let result = super.call("paymentTokens", "paymentTokens(address):(bool)", [
       ethereum.Value.fromAddress(param0)
@@ -823,6 +1003,70 @@ export class PIX extends ethereum.SmartContract {
     let result = super.tryCall("pixesInLand", "pixesInLand(uint256[]):(bool)", [
       ethereum.Value.fromUnsignedBigIntArray(tokenIds)
     ]);
+    if (result.reverted) {
+      return new ethereum.CallResult();
+    }
+    let value = result.value;
+    return ethereum.CallResult.fromValue(value[0].toBoolean());
+  }
+
+  relatedDrops(param0: BigInt, param1: BigInt): BigInt {
+    let result = super.call(
+      "relatedDrops",
+      "relatedDrops(uint256,uint256):(uint256)",
+      [
+        ethereum.Value.fromUnsignedBigInt(param0),
+        ethereum.Value.fromUnsignedBigInt(param1)
+      ]
+    );
+
+    return result[0].toBigInt();
+  }
+
+  try_relatedDrops(
+    param0: BigInt,
+    param1: BigInt
+  ): ethereum.CallResult<BigInt> {
+    let result = super.tryCall(
+      "relatedDrops",
+      "relatedDrops(uint256,uint256):(uint256)",
+      [
+        ethereum.Value.fromUnsignedBigInt(param0),
+        ethereum.Value.fromUnsignedBigInt(param1)
+      ]
+    );
+    if (result.reverted) {
+      return new ethereum.CallResult();
+    }
+    let value = result.value;
+    return ethereum.CallResult.fromValue(value[0].toBigInt());
+  }
+
+  relatedDropsStatus(param0: BigInt, param1: BigInt): boolean {
+    let result = super.call(
+      "relatedDropsStatus",
+      "relatedDropsStatus(uint256,uint256):(bool)",
+      [
+        ethereum.Value.fromUnsignedBigInt(param0),
+        ethereum.Value.fromUnsignedBigInt(param1)
+      ]
+    );
+
+    return result[0].toBoolean();
+  }
+
+  try_relatedDropsStatus(
+    param0: BigInt,
+    param1: BigInt
+  ): ethereum.CallResult<boolean> {
+    let result = super.tryCall(
+      "relatedDropsStatus",
+      "relatedDropsStatus(uint256,uint256):(bool)",
+      [
+        ethereum.Value.fromUnsignedBigInt(param0),
+        ethereum.Value.fromUnsignedBigInt(param1)
+      ]
+    );
     if (result.reverted) {
       return new ethereum.CallResult();
     }
@@ -1140,6 +1384,36 @@ export class BatchMintCallInfosStruct extends ethereum.Tuple {
   }
 }
 
+export class CancelRequestCall extends ethereum.Call {
+  get inputs(): CancelRequestCall__Inputs {
+    return new CancelRequestCall__Inputs(this);
+  }
+
+  get outputs(): CancelRequestCall__Outputs {
+    return new CancelRequestCall__Outputs(this);
+  }
+}
+
+export class CancelRequestCall__Inputs {
+  _call: CancelRequestCall;
+
+  constructor(call: CancelRequestCall) {
+    this._call = call;
+  }
+
+  get to(): Address {
+    return this._call.inputValues[0].value.toAddress();
+  }
+}
+
+export class CancelRequestCall__Outputs {
+  _call: CancelRequestCall;
+
+  constructor(call: CancelRequestCall) {
+    this._call = call;
+  }
+}
+
 export class CombineCall extends ethereum.Call {
   get inputs(): CombineCall__Inputs {
     return new CombineCall__Inputs(this);
@@ -1189,10 +1463,6 @@ export class CompleteRequestCall__Inputs {
 
   get to(): Address {
     return this._call.inputValues[0].value.toAddress();
-  }
-
-  get mode(): BigInt {
-    return this._call.inputValues[1].value.toBigInt();
   }
 }
 
@@ -1566,6 +1836,40 @@ export class SetBaseURICall__Outputs {
   }
 }
 
+export class SetBlacklistedAddressCall extends ethereum.Call {
+  get inputs(): SetBlacklistedAddressCall__Inputs {
+    return new SetBlacklistedAddressCall__Inputs(this);
+  }
+
+  get outputs(): SetBlacklistedAddressCall__Outputs {
+    return new SetBlacklistedAddressCall__Outputs(this);
+  }
+}
+
+export class SetBlacklistedAddressCall__Inputs {
+  _call: SetBlacklistedAddressCall;
+
+  constructor(call: SetBlacklistedAddressCall) {
+    this._call = call;
+  }
+
+  get account(): Address {
+    return this._call.inputValues[0].value.toAddress();
+  }
+
+  get blacklisted(): boolean {
+    return this._call.inputValues[1].value.toBoolean();
+  }
+}
+
+export class SetBlacklistedAddressCall__Outputs {
+  _call: SetBlacklistedAddressCall;
+
+  constructor(call: SetBlacklistedAddressCall) {
+    this._call = call;
+  }
+}
+
 export class SetCombinePriceCall extends ethereum.Call {
   get inputs(): SetCombinePriceCall__Inputs {
     return new SetCombinePriceCall__Inputs(this);
@@ -1596,20 +1900,20 @@ export class SetCombinePriceCall__Outputs {
   }
 }
 
-export class SetEndTimeCall extends ethereum.Call {
-  get inputs(): SetEndTimeCall__Inputs {
-    return new SetEndTimeCall__Inputs(this);
+export class SetDropInfoCall extends ethereum.Call {
+  get inputs(): SetDropInfoCall__Inputs {
+    return new SetDropInfoCall__Inputs(this);
   }
 
-  get outputs(): SetEndTimeCall__Outputs {
-    return new SetEndTimeCall__Outputs(this);
+  get outputs(): SetDropInfoCall__Outputs {
+    return new SetDropInfoCall__Outputs(this);
   }
 }
 
-export class SetEndTimeCall__Inputs {
-  _call: SetEndTimeCall;
+export class SetDropInfoCall__Inputs {
+  _call: SetDropInfoCall;
 
-  constructor(call: SetEndTimeCall) {
+  constructor(call: SetDropInfoCall) {
     this._call = call;
   }
 
@@ -1617,46 +1921,38 @@ export class SetEndTimeCall__Inputs {
     return this._call.inputValues[0].value.toBigInt();
   }
 
+  get drop(): SetDropInfoCallDropStruct {
+    return this._call.inputValues[1].value.toTuple() as SetDropInfoCallDropStruct;
+  }
+}
+
+export class SetDropInfoCall__Outputs {
+  _call: SetDropInfoCall;
+
+  constructor(call: SetDropInfoCall) {
+    this._call = call;
+  }
+}
+
+export class SetDropInfoCallDropStruct extends ethereum.Tuple {
+  get maxCount(): BigInt {
+    return this[0].toBigInt();
+  }
+
+  get requestCount(): BigInt {
+    return this[1].toBigInt();
+  }
+
+  get limitForPlayer(): BigInt {
+    return this[2].toBigInt();
+  }
+
+  get startTime(): BigInt {
+    return this[3].toBigInt();
+  }
+
   get endTime(): BigInt {
-    return this._call.inputValues[1].value.toBigInt();
-  }
-}
-
-export class SetEndTimeCall__Outputs {
-  _call: SetEndTimeCall;
-
-  constructor(call: SetEndTimeCall) {
-    this._call = call;
-  }
-}
-
-export class SetMediumLimitCountCall extends ethereum.Call {
-  get inputs(): SetMediumLimitCountCall__Inputs {
-    return new SetMediumLimitCountCall__Inputs(this);
-  }
-
-  get outputs(): SetMediumLimitCountCall__Outputs {
-    return new SetMediumLimitCountCall__Outputs(this);
-  }
-}
-
-export class SetMediumLimitCountCall__Inputs {
-  _call: SetMediumLimitCountCall;
-
-  constructor(call: SetMediumLimitCountCall) {
-    this._call = call;
-  }
-
-  get limit(): BigInt {
-    return this._call.inputValues[0].value.toBigInt();
-  }
-}
-
-export class SetMediumLimitCountCall__Outputs {
-  _call: SetMediumLimitCountCall;
-
-  constructor(call: SetMediumLimitCountCall) {
-    this._call = call;
+    return this[4].toBigInt();
   }
 }
 
@@ -1822,100 +2118,36 @@ export class SetPaymentTokenCall__Outputs {
   }
 }
 
-export class SetPlayerAddressCall extends ethereum.Call {
-  get inputs(): SetPlayerAddressCall__Inputs {
-    return new SetPlayerAddressCall__Inputs(this);
+export class SetRelationForDropsCall extends ethereum.Call {
+  get inputs(): SetRelationForDropsCall__Inputs {
+    return new SetRelationForDropsCall__Inputs(this);
   }
 
-  get outputs(): SetPlayerAddressCall__Outputs {
-    return new SetPlayerAddressCall__Outputs(this);
+  get outputs(): SetRelationForDropsCall__Outputs {
+    return new SetRelationForDropsCall__Outputs(this);
   }
 }
 
-export class SetPlayerAddressCall__Inputs {
-  _call: SetPlayerAddressCall;
+export class SetRelationForDropsCall__Inputs {
+  _call: SetRelationForDropsCall;
 
-  constructor(call: SetPlayerAddressCall) {
+  constructor(call: SetRelationForDropsCall) {
     this._call = call;
   }
 
-  get playerId(): BigInt {
+  get drop1(): BigInt {
     return this._call.inputValues[0].value.toBigInt();
   }
 
-  get account(): Address {
-    return this._call.inputValues[1].value.toAddress();
-  }
-}
-
-export class SetPlayerAddressCall__Outputs {
-  _call: SetPlayerAddressCall;
-
-  constructor(call: SetPlayerAddressCall) {
-    this._call = call;
-  }
-}
-
-export class SetSmallLimitCountCall extends ethereum.Call {
-  get inputs(): SetSmallLimitCountCall__Inputs {
-    return new SetSmallLimitCountCall__Inputs(this);
-  }
-
-  get outputs(): SetSmallLimitCountCall__Outputs {
-    return new SetSmallLimitCountCall__Outputs(this);
-  }
-}
-
-export class SetSmallLimitCountCall__Inputs {
-  _call: SetSmallLimitCountCall;
-
-  constructor(call: SetSmallLimitCountCall) {
-    this._call = call;
-  }
-
-  get limit(): BigInt {
-    return this._call.inputValues[0].value.toBigInt();
-  }
-}
-
-export class SetSmallLimitCountCall__Outputs {
-  _call: SetSmallLimitCountCall;
-
-  constructor(call: SetSmallLimitCountCall) {
-    this._call = call;
-  }
-}
-
-export class SetStartTimeCall extends ethereum.Call {
-  get inputs(): SetStartTimeCall__Inputs {
-    return new SetStartTimeCall__Inputs(this);
-  }
-
-  get outputs(): SetStartTimeCall__Outputs {
-    return new SetStartTimeCall__Outputs(this);
-  }
-}
-
-export class SetStartTimeCall__Inputs {
-  _call: SetStartTimeCall;
-
-  constructor(call: SetStartTimeCall) {
-    this._call = call;
-  }
-
-  get dropId(): BigInt {
-    return this._call.inputValues[0].value.toBigInt();
-  }
-
-  get startTime(): BigInt {
+  get drop2(): BigInt {
     return this._call.inputValues[1].value.toBigInt();
   }
 }
 
-export class SetStartTimeCall__Outputs {
-  _call: SetStartTimeCall;
+export class SetRelationForDropsCall__Outputs {
+  _call: SetRelationForDropsCall;
 
-  constructor(call: SetStartTimeCall) {
+  constructor(call: SetRelationForDropsCall) {
     this._call = call;
   }
 }
