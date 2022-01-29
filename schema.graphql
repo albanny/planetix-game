@@ -47,7 +47,7 @@ type Sale @entity {
 
   type: BigInt!
   isActive: Boolean!
-  requestor: Account!
+  requestor: Account
   tokenIds: [BigInt!]!
   tokens: BigInt!
   price: BigInt!

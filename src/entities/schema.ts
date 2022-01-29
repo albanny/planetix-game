@@ -411,13 +411,21 @@ export class Sale extends Entity {
     this.set("isActive", Value.fromBoolean(value));
   }
 
-  get requestor(): string {
+  get requestor(): string | null {
     let value = this.get("requestor");
-    return value.toString();
+    if (value === null || value.kind == ValueKind.NULL) {
+      return null;
+    } else {
+      return value.toString();
+    }
   }
 
-  set requestor(value: string) {
-    this.set("requestor", Value.fromString(value));
+  set requestor(value: string | null) {
+    if (value === null) {
+      this.unset("requestor");
+    } else {
+      this.set("requestor", Value.fromString(value as string));
+    }
   }
 
   get tokenIds(): Array<BigInt> {
