@@ -30,6 +30,7 @@ export function handleSaleRequested(event: SaleRequested): void {
   let sale = new Sale(getSaleId(event.params.saleId));
   sale.type = BigInt.fromI32(1);
   sale.isActive = true;
+  createAccount(event.params.seller);
   sale.requestor = event.params.seller.toHexString();
   sale.tokenIds = event.params.tokenIds;
   sale.tokens = BigInt.fromI32(sale.tokenIds.length);
