@@ -81,3 +81,28 @@ type Bid @entity {
   category: BigInt
   size: BigInt
 }
+
+type LandmarkType @entity {
+  id: ID!
+
+  landmarkType: BigInt!
+
+  landmarks: [Landmark]! @derivedFrom(field: "landmarkType")
+}
+
+type LandmarkAccount @entity {
+  id: ID!
+
+  balance: BigInt!
+
+  landmarks: [Landmark]! @derivedFrom(field: "account")
+}
+
+type Landmark @entity {
+  id: ID!
+
+  account: LandmarkAccount!
+  tokenId: BigInt!
+  category: BigInt!
+  landmarkType: LandmarkType!
+}
