@@ -25,6 +25,10 @@ export function handleLandmarkMinted(event: LandmarkMinted): void {
   landmark.landmarkType = event.params.landmarkType.toString();
 
   landmark.save();
+
+  let account = LandmarkAccount.load(event.params.account.toHexString());
+  account.balance = account.balance.plus(BigInt.fromI32(1));
+  account.save();
 }
 
 export function createLandmarkAccount(addr: Address): void {
