@@ -137,7 +137,6 @@ dataSources:
       language: wasm/assemblyscript
       file: ./src/landmark.ts
       entities:
-        - Global
         - LandmarkType
         - Landmark
         - LandmarkAccount
