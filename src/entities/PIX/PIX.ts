@@ -252,6 +252,32 @@ export class Requested__Params {
   get mode(): BigInt {
     return this._event.parameters[2].value.toBigInt();
   }
+}
+
+export class Requested1 extends ethereum.Event {
+  get params(): Requested1__Params {
+    return new Requested1__Params(this);
+  }
+}
+
+export class Requested1__Params {
+  _event: Requested1;
+
+  constructor(event: Requested1) {
+    this._event = event;
+  }
+
+  get dropId(): BigInt {
+    return this._event.parameters[0].value.toBigInt();
+  }
+
+  get playerId(): BigInt {
+    return this._event.parameters[1].value.toBigInt();
+  }
+
+  get mode(): BigInt {
+    return this._event.parameters[2].value.toBigInt();
+  }
 
   get purchasedPacks(): BigInt {
     return this._event.parameters[3].value.toBigInt();

@@ -1,5 +1,5 @@
 import { BigInt } from "@graphprotocol/graph-ts";
-import { Transfer, PIXMinted, Requested } from "./entities/PIX/PIX";
+import { Transfer, PIXMinted, Requested, Requested1 } from "./entities/PIX/PIX";
 import {
   Global,
   Account,
@@ -26,6 +26,26 @@ export function handlePIXMinted(event: PIXMinted): void {
 }
 
 export function handlePIXRequested(event: Requested): void {
+  let entity = Global.load("pixRequested");
+  if (entity == null) {
+    entity = new Global("pixRequested");
+    entity.value = new BigInt(0);
+  }
+
+  let pixRequested = new PIXRequested(entity.value.toString());
+  pixRequested.requestedId = entity.value;
+  pixRequested.dropId = event.params.dropId;
+  pixRequested.playerId = event.params.playerId;
+  pixRequested.mode = event.params.mode;
+  pixRequested.count = new BigInt(0);
+  pixRequested.purchasedPacks = new BigInt(0);
+  pixRequested.save();
+
+  entity.value = entity.value.plus(BigInt.fromI32(1));
+  entity.save();
+}
+
+export function handlePIXRequestedNew(event: Requested1): void {
   let entity = Global.load("pixRequested");
   if (entity == null) {
     entity = new Global("pixRequested");

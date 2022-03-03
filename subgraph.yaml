@@ -25,8 +25,10 @@ dataSources:
       eventHandlers:
         - event: PIXMinted(indexed address,indexed uint256,indexed uint256,uint8,uint8)
           handler: handlePIXMinted
-        - event: Requested(indexed uint256,indexed uint256,indexed uint256,uint256,uint256)
+        - event: Requested(indexed uint256,indexed uint256,indexed uint256)
           handler: handlePIXRequested
+        - event: Requested(indexed uint256,indexed uint256,indexed uint256,uint256,uint256)
+          handler: handlePIXRequestedNew
         - event: Transfer(indexed address,indexed address,indexed uint256)
           handler: handleTransfer
 
