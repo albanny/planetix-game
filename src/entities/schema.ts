@@ -643,22 +643,38 @@ export class SaleLog extends Entity {
     this.set("status", Value.fromBigInt(value));
   }
 
-  get endTime(): BigInt {
-    let value = this.get("endTime");
-    return value.toBigInt();
-  }
-
-  set endTime(value: BigInt) {
-    this.set("endTime", Value.fromBigInt(value));
-  }
-
-  get price(): BigInt {
+  get price(): BigInt | null {
     let value = this.get("price");
-    return value.toBigInt();
+    if (value === null || value.kind == ValueKind.NULL) {
+      return null;
+    } else {
+      return value.toBigInt();
+    }
   }
 
-  set price(value: BigInt) {
-    this.set("price", Value.fromBigInt(value));
+  set price(value: BigInt | null) {
+    if (value === null) {
+      this.unset("price");
+    } else {
+      this.set("price", Value.fromBigInt(value as BigInt));
+    }
+  }
+
+  get endTime(): BigInt | null {
+    let value = this.get("endTime");
+    if (value === null || value.kind == ValueKind.NULL) {
+      return null;
+    } else {
+      return value.toBigInt();
+    }
+  }
+
+  set endTime(value: BigInt | null) {
+    if (value === null) {
+      this.unset("endTime");
+    } else {
+      this.set("endTime", Value.fromBigInt(value as BigInt));
+    }
   }
 }
 
