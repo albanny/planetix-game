@@ -34,12 +34,13 @@ type PIXTransfer @entity {
 }
 
 type PIXRequested @entity {
-  id: ID!
-
-  requestedId: BigInt!
-  dropId: BigInt!
-  playerId: BigInt!
-  mode: BigInt!
+    id: ID!
+    requestedId: BigInt!
+    dropId: BigInt!
+    playerId: BigInt!
+    mode: BigInt!
+    count: BigInt!
+    purchasedPacks: BigInt!
 }
 
 type Sale @entity {
