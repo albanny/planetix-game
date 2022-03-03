@@ -34,13 +34,13 @@ type PIXTransfer @entity {
 }
 
 type PIXRequested @entity {
-    id: ID!
-    requestedId: BigInt!
-    dropId: BigInt!
-    playerId: BigInt!
-    mode: BigInt!
-    count: BigInt!
-    purchasedPacks: BigInt!
+  id: ID!
+  requestedId: BigInt!
+  dropId: BigInt!
+  playerId: BigInt!
+  mode: BigInt!
+  count: BigInt!
+  purchasedPacks: BigInt!
 }
 
 type Sale @entity {
@@ -70,6 +70,8 @@ type SaleLog @entity {
   logId: BigInt!
   sale: Sale!
   status: BigInt!
+  price: BigInt
+  endTime: BigInt
 }
 
 type Bid @entity {
