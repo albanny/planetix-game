@@ -89,6 +89,7 @@ export function handleAuctionUpdated(event: SaleUpdated): void {
   saleLog.logId = totalEntity.value;
   saleLog.sale = getSaleId(event.params.saleId);
   saleLog.status = BigInt.fromI32(3);
+  saleLog.endTime = event.params.newEndTime;
   saleLog.save();
 
   totalEntity.value = totalEntity.value.plus(BigInt.fromI32(1));
