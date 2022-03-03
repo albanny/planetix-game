@@ -642,6 +642,24 @@ export class SaleLog extends Entity {
   set status(value: BigInt) {
     this.set("status", Value.fromBigInt(value));
   }
+
+  get endTime(): BigInt {
+    let value = this.get("endTime");
+    return value.toBigInt();
+  }
+
+  set endTime(value: BigInt) {
+    this.set("endTime", Value.fromBigInt(value));
+  }
+
+  get price(): BigInt {
+    let value = this.get("price");
+    return value.toBigInt();
+  }
+
+  set price(value: BigInt) {
+    this.set("price", Value.fromBigInt(value));
+  }
 }
 
 export class Bid extends Entity {
