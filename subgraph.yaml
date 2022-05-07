@@ -51,6 +51,8 @@ dataSources:
       abis:
         - name: PIXStaking
           file: ./abis/pix_staking.json
+        - name: PIX
+          file: ./abis/pix.json
       eventHandlers:
         - event: PIXStaked(uint256,indexed address)
           handler: handlePIXStaked
