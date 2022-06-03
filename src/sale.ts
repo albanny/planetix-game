@@ -120,6 +120,7 @@ export function handleSalePurchased(event: Purchased): void {
   createAccount(event.params.buyer);
   sale.taker = event.params.buyer.toHexString();
   sale.isActive = false;
+  sale.price = event.params.price;
   sale.soldDate = event.block.timestamp;
   sale.save();
 
