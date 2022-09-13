@@ -22,6 +22,7 @@ type PIX @entity {
   category: BigInt!
   size: BigInt!
   account: Account!
+  sale: Sale
   tokenMetadataURI: String!
 }
 

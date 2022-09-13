@@ -51,6 +51,9 @@ export function handleAuctionRequested(event: SaleRequested): void {
   for (let i = 0; i < tokenIds.length; i++) {
     let pix = PIX.load(getPIXId(tokenIds[i]));
     if (pix != null) {
+      pix.sale = sale.id;
+      pix.save();
+
       let pixSale = new PIXSale(
         getPIXSaleId(getSaleId(event.params.saleId), tokenIds[i])
       );

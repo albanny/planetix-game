@@ -212,6 +212,23 @@ export class PIX extends Entity {
     this.set("account", Value.fromString(value));
   }
 
+  get sale(): string | null {
+    let value = this.get("sale");
+    if (value === null || value.kind == ValueKind.NULL) {
+      return null;
+    } else {
+      return value.toString();
+    }
+  }
+
+  set sale(value: string | null) {
+    if (value === null) {
+      this.unset("sale");
+    } else {
+      this.set("sale", Value.fromString(value as string));
+    }
+  }
+
   get tokenMetadataURI(): string {
     let value = this.get("tokenMetadataURI");
     return value.toString();
