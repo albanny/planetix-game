@@ -22,7 +22,6 @@ type PIX @entity {
   category: BigInt!
   size: BigInt!
   account: Account!
-  sale: Sale
   tokenMetadataURI: String!
 }
 
@@ -36,6 +35,13 @@ type PIXStaking @entity {
   account: Account!
   staked: Boolean!
   stakedAt: BigInt!
+}
+
+type PIXSale @entity {
+  id: ID!
+
+  pix: PIX!
+  sale: Sale!
 }
 
 type PIXTransfer @entity {
@@ -75,7 +81,7 @@ type Sale @entity {
   soldDate: BigInt
 
   bids: [Bid]! @derivedFrom(field: "sale")
-  pixes: [PIX]! @derivedFrom(field: "sale")
+  pixes: [PIXSale]! @derivedFrom(field: "sale")
 }
 
 type SaleLog @entity {
