@@ -82,8 +82,7 @@ type Sale @entity {
   soldDate: BigInt
 
   bids: [Bid]! @derivedFrom(field: "sale")
-  pixes: [PIX]! @derivedFrom(field: "sale")
-  pixSales: [PIXSale]! @derivedFrom(field: "sale")
+  pixes: [PIXSale]! @derivedFrom(field: "sale")
 }
 
 type SaleLog @entity {
