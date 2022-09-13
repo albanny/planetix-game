@@ -38,6 +38,13 @@ type PIXStaking @entity {
   stakedAt: BigInt!
 }
 
+type PIXSale @entity {
+  id: ID!
+
+  pix: PIX!
+  sale: Sale!
+}
+
 type PIXTransfer @entity {
   id: ID!
 
@@ -75,7 +82,7 @@ type Sale @entity {
   soldDate: BigInt
 
   bids: [Bid]! @derivedFrom(field: "sale")
-  pixes: [PIX]! @derivedFrom(field: "sale")
+  pixes: [PIXSale]! @derivedFrom(field: "sale")
 }
 
 type SaleLog @entity {
