@@ -14,6 +14,7 @@ import {
   SaleLog,
   Bid as BidEntity,
   PIX,
+  PIXSale,
 } from "./entities/schema";
 
 export function handleAuctionRequested(event: SaleRequested): void {
@@ -52,6 +53,13 @@ export function handleAuctionRequested(event: SaleRequested): void {
     if (pix != null) {
       pix.sale = sale.id;
       pix.save();
+
+      let pixSale = new PIXSale(
+        getPIXSaleId(getSaleId(event.params.saleId), tokenIds[i])
+      );
+      pixSale.pix = pix.id;
+      pixSale.sale = sale.id;
+      pixSale.save();
 
       if (i == 0) {
         sale.category = pix.category;
@@ -205,4 +213,8 @@ function getTotalBidsKey(saleId: BigInt): string {
 
 function getBidId(saleId: BigInt, bidCount: BigInt): string {
   return saleId.toString() + "-" + bidCount.toString();
+}
+
+function getPIXSaleId(saleId: string, id: BigInt): string {
+  return saleId + " - " + id.toString();
 }

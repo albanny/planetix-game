@@ -7,7 +7,7 @@ import {
   Purchased,
   PurchasedWithSignature,
 } from "./entities/PIXFixedSale/PIXFixedSale";
-import { Global, Sale, SaleLog, PIX } from "./entities/schema";
+import { Global, Sale, SaleLog, PIX, PIXSale } from "./entities/schema";
 
 export function handleSaleRequested(event: SaleRequested): void {
   let entity = Global.load("fixedSales");
@@ -45,6 +45,13 @@ export function handleSaleRequested(event: SaleRequested): void {
     if (pix != null) {
       pix.sale = sale.id;
       pix.save();
+
+      let pixSale = new PIXSale(
+        getPIXSaleId(getSaleId(event.params.saleId), tokenIds[i])
+      );
+      pixSale.pix = pix.id;
+      pixSale.sale = sale.id;
+      pixSale.save();
 
       if (i == 0) {
         sale.category = pix.category;
@@ -119,6 +126,7 @@ export function handleSalePurchased(event: Purchased): void {
   let sale = Sale.load(getSaleId(event.params.saleId));
   createAccount(event.params.buyer);
   sale.taker = event.params.buyer.toHexString();
+  sale.price = event.params.price;
   sale.isActive = false;
   sale.price = event.params.price;
   sale.soldDate = event.block.timestamp;
@@ -149,9 +157,9 @@ export function handleSalePurchased(event: Purchased): void {
 export function handleSalePurchasedWithSignature(
   event: PurchasedWithSignature
 ): void {
-  let entity = Global.load('fixedSalesWithHash');
+  let entity = Global.load("fixedSalesWithHash");
   if (entity == null) {
-    entity = new Global('fixedSalesWithHash');
+    entity = new Global("fixedSalesWithHash");
     entity.value = new BigInt(0);
   }
 
@@ -169,9 +177,9 @@ export function handleSalePurchasedWithSignature(
   sale.soldDate = event.block.timestamp;
   sale.save();
 
-  let totalEntity = Global.load('totalSaleLogs');
+  let totalEntity = Global.load("totalSaleLogs");
   if (totalEntity == null) {
-    totalEntity = new Global('totalSaleLogs');
+    totalEntity = new Global("totalSaleLogs");
     totalEntity.value = new BigInt(0);
   }
 
@@ -193,9 +201,13 @@ function getSaleId(id: BigInt): string {
 }
 
 function getSaleWithHashId(id: BigInt): string {
-  return 'H' + id.toString();
+  return "H" + id.toString();
 }
 
 function getPIXId(id: BigInt): string {
   return "PIX - " + id.toString();
+}
+
+function getPIXSaleId(saleId: string, id: BigInt): string {
+  return saleId + " - " + id.toString();
 }
