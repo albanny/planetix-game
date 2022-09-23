@@ -177,6 +177,23 @@ export function handleSalePurchasedWithSignature(
   sale.soldDate = event.block.timestamp;
   sale.save();
 
+  let pix = PIX.load(getPIXId(event.params.tokenId));
+  if (pix != null) {
+    pix.sale = sale.id;
+    pix.save();
+
+    let pixSale = new PIXSale(
+        getPIXSaleId(getSaleWithHashId(entity.value), event.params.tokenId)
+    );
+    pixSale.pix = pix.id;
+    pixSale.sale = sale.id;
+    pixSale.save();
+
+    sale.category = pix.category;
+    sale.size = pix.size;
+    sale.save();
+  }
+
   let totalEntity = Global.load("totalSaleLogs");
   if (totalEntity == null) {
     totalEntity = new Global("totalSaleLogs");
